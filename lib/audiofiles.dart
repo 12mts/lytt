@@ -10,7 +10,6 @@ class AudioFile {
     downloadFile(url).then((value){
         path = value;
     });
-    print(path);
   }
 
   Future<String> downloadFile(String url) async {
