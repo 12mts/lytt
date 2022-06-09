@@ -35,7 +35,8 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   # Audio
-  audioplayers: ^1.0.0-rc.4
+  just_audio: ^0.9.24
+  just_audio_windows: ^0.1.0
 
   # Helps with paththing
   path_provider: ^2.0.11

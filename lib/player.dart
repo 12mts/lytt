@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:just_audio/just_audio.dart';
 //import 'package:lytt/audiofiles.dart';
 
 class Player {
@@ -11,15 +11,15 @@ class Player {
   Player(url) {
     //var file = AudioFile(url);
     //player.setSource(DeviceFileSource(file.path));
-    player.setSourceUrl(url);
+    player.setUrl(url);
   }
 
   void setURL(url) {
-    player.setSourceUrl(url);
+    player.setUrl(url);
   }
 
   bool isPlaying() {
-    return player.state == PlayerState.playing;
+    return player.playing;
   }
 
   bool startStop() {
@@ -27,13 +27,13 @@ class Player {
       player.pause();
       return false;
     }
-    player.resume();
+    player.play();
     return true;
   }
 
-  Future<String> progress() async {
-    return '${(await player.getCurrentPosition()).toString()}'
-        '/${(await player.getDuration()).toString()}';
+  String progress() {
+    return '${(player.position).toString()}'
+        '/${(player.duration).toString()}';
   }
 
   void setTime(int time) {
@@ -50,7 +50,7 @@ class PlayerWidget extends StatefulWidget{
 }
 
 class _PlayerWidgetState extends State<PlayerWidget> {
-  final player = Player("http://traffic.libsyn.com/hellointernet/HI201.mp3");
+  final player = Player("http://traffic.libsyn.com/hellointernet/136FinalFinal.mp3");
   var playpause = "play";
 
   void setTimer() {
@@ -76,13 +76,15 @@ class _PlayerWidgetState extends State<PlayerWidget> {
           },
           child: Text(playpause),
         ),
+        /*
         FutureBuilder(
           future: player.progress(),
             builder: (BuildContext context, AsyncSnapshot<String> progress) {
             return Text(progress.requireData);
             }
         ),
-        //Text(player.progress()),
+        */
+        Text(player.progress()),
         TextField(
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
