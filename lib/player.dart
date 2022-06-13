@@ -25,10 +25,10 @@ class Player {
   bool startStop() {
     if (isPlaying()) {
       player.pause();
-      return false;
+      return isPlaying();
     }
     player.play();
-    return true;
+    return isPlaying();
   }
 
   String progress() {
@@ -39,10 +39,9 @@ class Player {
   void setTime(int time) {
     player.seek(Duration(seconds: time));
   }
-
 }
 
-class PlayerWidget extends StatefulWidget{
+class PlayerWidget extends StatefulWidget {
   const PlayerWidget({super.key});
 
   @override
@@ -50,12 +49,10 @@ class PlayerWidget extends StatefulWidget{
 }
 
 class _PlayerWidgetState extends State<PlayerWidget> {
-  final player = Player("http://traffic.libsyn.com/hellointernet/136FinalFinal.mp3");
+  final player = Player("http://traffic.libsyn.com/hellointernet/HI201.mp3");
   var playpause = "play";
 
-  void setTimer() {
-
-  }
+  void setTimer() {}
 
   @override
   Widget build(BuildContext context) {
@@ -63,14 +60,12 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text("Hello Internet"),
-
         OutlinedButton(
           onPressed: () {
             setState(() {
               playpause = player.startStop() ? "Play" : "Pause";
               if (player.isPlaying()) {
-                Timer.periodic(const Duration(seconds: 1),
-                        (_) => setTimer());
+                Timer.periodic(const Duration(seconds: 1), (_) => setTimer());
               }
             });
           },
