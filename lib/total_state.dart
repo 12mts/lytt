@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lytt/player.dart';
@@ -15,7 +14,8 @@ class LyttApp extends StatefulWidget {
 class _LyttApp extends State<LyttApp> {
   // App state
   final lib = PodcastLibrary();
-  final player = Player("http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3");
+  final player = Player(
+      "http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3");
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +28,7 @@ class _LyttApp extends State<LyttApp> {
             // clicking the menu button
             onPressed: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => episodes())
-              );
+                  context, MaterialPageRoute(builder: (context) => episodes()));
             }),
       ]),
       body: playerWidget(player),
@@ -69,16 +67,13 @@ class _LyttApp extends State<LyttApp> {
   /// The episode list widget
   Widget episodes() {
     return Scaffold(
-        appBar: AppBar(
-            title: const Text("List")
-        ),
+        appBar: AppBar(title: const Text("List")),
         body: FutureBuilder(
           future: lib.getPodcast(),
           builder: (BuildContext context, AsyncSnapshot<Podcast> pod) {
             return ListView(children: podcast(pod.requireData));
           },
-        )
-    );
+        ));
   }
 
   /// Takes a podcast and returns list of all episodes as widgets
