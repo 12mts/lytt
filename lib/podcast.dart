@@ -1,4 +1,3 @@
-
 import 'package:http/io_client.dart';
 import 'package:webfeed/webfeed.dart';
 
@@ -21,12 +20,19 @@ class Podcast {
 }
 
 class PodcastLibrary {
-  final list = [];
+  final List<Podcast> list = [];
 
-  void addPodcast(url) {
-    _createPodcast(url).then((value) {
-      list.add(value);
-    });
+  PodcastLibrary();
+
+  /**
+   * Not done propery. Needs to be handled with futrure
+   */
+  Future<Podcast> getPodcast() {
+    return _createPodcast("http://www.hellointernet.fm/podcast?format=rss");
+  }
+
+  void addPodcast(url) async {
+    list.add(await _createPodcast(url));
   }
 
   Future<Podcast> _createPodcast(String url) async {
@@ -36,7 +42,7 @@ class PodcastLibrary {
 
     final pod = Podcast(feed.title);
     var list = feed.items;
-    if (list!=null) {
+    if (list != null) {
       for (var ep in list) {
         pod.addEpisode(Episode(ep.enclosure?.url, ep.title));
       }

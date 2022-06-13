@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lytt/player.dart';
+import 'package:lytt/podcast.dart';
 
 void main() {
   runApp(const MyApp());
@@ -59,6 +60,7 @@ class PodcastList extends StatefulWidget {
 }
 
 class _PodcastList extends State<PodcastList> {
+  var lib = PodcastLibrary();
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +68,20 @@ class _PodcastList extends State<PodcastList> {
         appBar: AppBar(
             title: const Text("List")
         ),
-        body: Column(
-          children: const [
-            Text("data"),
-          ],
+        body: FutureBuilder(
+          future: lib.getPodcast(),
+          builder: (BuildContext context, AsyncSnapshot<Podcast> pod) {
+            return ListView(children: podcast(pod.requireData));
+          },
         )
     );
+  }
+
+  List<Widget> podcast(Podcast p) {
+    List<Widget> list = [];
+    for (Episode e in p.list) {
+      list.add(Text(e.name));
+    }
+    return list;
   }
 }
