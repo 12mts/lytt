@@ -6,8 +6,6 @@ class Player {
   final player = AudioPlayer();
 
   Player(url) {
-    //var file = AudioFile(url);
-    //player.setSource(DeviceFileSource(file.path));
     player.setUrl(url);
   }
 

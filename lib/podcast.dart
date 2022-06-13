@@ -19,16 +19,16 @@ class Podcast {
   }
 }
 
+/// Library for managing podcasts
 class PodcastLibrary {
   final List<Podcast> list = [];
 
+  /// Creates HI when started
   PodcastLibrary() {
     addPodcast("http://www.hellointernet.fm/podcast?format=rss");
   }
 
-  /**
-   * Not done propery. Needs to be handled with futrure
-   */
+  /// Returns HI for now
   Future<Podcast> getPodcast() async {
     return list[0];
   }

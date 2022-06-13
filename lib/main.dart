@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lytt/totall_state.dart';
+import 'package:lytt/total_state.dart';
 
 void main() {
   runApp(const MyApp());
