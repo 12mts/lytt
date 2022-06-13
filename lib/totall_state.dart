@@ -80,7 +80,14 @@ class _LyttApp extends State<LyttApp> {
   List<Widget> podcast(Podcast p) {
     List<Widget> list = [];
     for (Episode e in p.list) {
-      list.add(Text(e.name));
+      list.add(ListTile(
+        title: Text(e.name),
+        onTap: () {
+          setState(() {
+            player.setURL(e.url);
+          });
+        },
+      ));
     }
     return list;
   }
