@@ -22,13 +22,15 @@ class Podcast {
 class PodcastLibrary {
   final List<Podcast> list = [];
 
-  PodcastLibrary();
+  PodcastLibrary() {
+    addPodcast("http://www.hellointernet.fm/podcast?format=rss");
+  }
 
   /**
    * Not done propery. Needs to be handled with futrure
    */
-  Future<Podcast> getPodcast() {
-    return _createPodcast("http://www.hellointernet.fm/podcast?format=rss");
+  Future<Podcast> getPodcast() async {
+    return list[0];
   }
 
   void addPodcast(url) async {
