@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lytt/player.dart';
 import 'package:lytt/podcast.dart';
+import 'package:lytt/storage_manager.dart';
 
 class LyttApp extends StatefulWidget {
   const LyttApp({Key? key, required this.title}) : super(key: key);
@@ -67,15 +68,14 @@ class _LyttApp extends State<LyttApp> {
   /// The select podcasts and episodes
   Widget selectionPodcast() {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Podcasts"),
-          actions: [
-            IconButton(onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => newPodcastPage()));
-            }, icon: const Icon(Icons.add))
-          ]
-        ),
+        appBar: AppBar(title: const Text("Podcasts"), actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => newPodcastPage()));
+              },
+              icon: const Icon(Icons.add))
+        ]),
         body: FutureBuilder(
           future: lib.getPodcasts(),
           builder: (BuildContext context, AsyncSnapshot<List<Podcast>> pod) {
@@ -123,10 +123,19 @@ class _LyttApp extends State<LyttApp> {
   }
 
   Widget newPodcastPage() {
+    final s = StorageHandler();
     return Scaffold(
         appBar: AppBar(title: const Text("New podcast")),
-        body: TextField(onSubmitted: (url) {
-          lib.addPodcast(url);
-    }));
+        body: Column(children: [
+          TextField(onSubmitted: (url) {
+            lib.addPodcast(url);
+            s.writeString(url);
+          }),
+          FutureBuilder(
+              future: s.readString(),
+              builder: (BuildContext context, AsyncSnapshot<String> last) {
+                return Text(last.requireData);
+              }),
+        ]));
   }
 }
