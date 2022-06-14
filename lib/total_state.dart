@@ -67,7 +67,15 @@ class _LyttApp extends State<LyttApp> {
   /// The select podcasts and episodes
   Widget selectionPodcast() {
     return Scaffold(
-        appBar: AppBar(title: const Text("Podcasts")),
+        appBar: AppBar(
+          title: const Text("Podcasts"),
+          actions: [
+            IconButton(onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => newPodcastPage()));
+            }, icon: const Icon(Icons.add))
+          ]
+        ),
         body: FutureBuilder(
           future: lib.getPodcasts(),
           builder: (BuildContext context, AsyncSnapshot<List<Podcast>> pod) {
@@ -112,5 +120,13 @@ class _LyttApp extends State<LyttApp> {
       ));
     }
     return list;
+  }
+
+  Widget newPodcastPage() {
+    return Scaffold(
+        appBar: AppBar(title: const Text("New podcast")),
+        body: TextField(onSubmitted: (url) {
+          lib.addPodcast(url);
+    }));
   }
 }
