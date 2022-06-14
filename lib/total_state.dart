@@ -27,8 +27,8 @@ class _LyttApp extends State<LyttApp> {
             // Changes the page to list of episodes when
             // clicking the menu button
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => episodes()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => selectionPodcast()));
             }),
       ]),
       body: playerWidget(player),
@@ -64,20 +64,42 @@ class _LyttApp extends State<LyttApp> {
     );
   }
 
-  /// The episode list widget
-  Widget episodes() {
+  /// The select podcasts and episodes
+  Widget selectionPodcast() {
     return Scaffold(
-        appBar: AppBar(title: const Text("List")),
+        appBar: AppBar(title: const Text("Podcasts")),
         body: FutureBuilder(
-          future: lib.getPodcast(),
-          builder: (BuildContext context, AsyncSnapshot<Podcast> pod) {
-            return ListView(children: podcast(pod.requireData));
+          future: lib.getPodcasts(),
+          builder: (BuildContext context, AsyncSnapshot<List<Podcast>> pod) {
+            return ListView(children: podcastList(pod.requireData));
           },
         ));
   }
 
   /// Takes a podcast and returns list of all episodes as widgets
-  List<Widget> podcast(Podcast p) {
+  List<Widget> podcastList(List<Podcast> podcastList) {
+    List<Widget> list = [];
+    for (Podcast p in podcastList) {
+      list.add(ListTile(
+        title: Text(p.name),
+        onTap: () {
+          setState(() {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => selectionEpisodes(p)));
+          });
+        },
+      ));
+    }
+    return list;
+  }
+
+  Widget selectionEpisodes(Podcast p) {
+    return Scaffold(
+        appBar: AppBar(title: Text(p.name)),
+        body: ListView(children: episodeList(p)));
+  }
+
+  List<Widget> episodeList(Podcast p) {
     List<Widget> list = [];
     for (Episode e in p.list) {
       list.add(ListTile(

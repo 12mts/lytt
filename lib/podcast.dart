@@ -28,6 +28,10 @@ class PodcastLibrary {
     addPodcast("http://www.hellointernet.fm/podcast?format=rss");
   }
 
+  Future<List<Podcast>> getPodcasts() async {
+    return list;
+  }
+
   /// Returns HI for now
   Future<Podcast> getPodcast() async {
     return list[0];
