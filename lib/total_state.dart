@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lytt/player.dart';
@@ -109,7 +111,7 @@ class _LyttApp extends State<LyttApp> {
 
   List<Widget> episodeList(Podcast p) {
     List<Widget> list = [];
-    for (Episode e in p.list) {
+    for (Episode e in p.episodes) {
       list.add(ListTile(
         title: Text(e.name),
         onTap: () {
@@ -129,7 +131,7 @@ class _LyttApp extends State<LyttApp> {
         body: Column(children: [
           TextField(onSubmitted: (url) {
             lib.addPodcast(url);
-            s.writeString(url);
+            s.writeString(jsonEncode(lib));
           }),
           FutureBuilder(
               future: s.readString(),

@@ -15,11 +15,11 @@ class StorageHandler {
     return File('$path/last.txt');
   }
 
-  Future<File> writeString(String url) async {
+  Future<File> writeString(String text) async {
     final file = await _localFile;
 
     // Write the file
-    return file.writeAsString(url);
+    return file.writeAsString(text);
   }
 
   Future<String> readString() async {

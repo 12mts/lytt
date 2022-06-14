@@ -6,17 +6,29 @@ class Episode {
   var name;
 
   Episode(this.url, this.name);
+
+  Map<String, dynamic> toJson() => {
+    'url' : url,
+    'name' : name
+  };
 }
 
 class Podcast {
-  var name;
-  final list = [];
+  String name;
+  String url;
+  final List<Episode> episodes = [];
 
-  Podcast(this.name);
+  Podcast(this.name, this.url);
 
   void addEpisode(Episode e) {
-    list.add(e);
+    episodes.add(e);
   }
+
+  Map<String, dynamic> toJson() => {
+    'name' : name,
+    'url' : url,
+    'episodes' : episodes
+  };
 }
 
 /// Library for managing podcasts
@@ -32,11 +44,6 @@ class PodcastLibrary {
     return list;
   }
 
-  /// Returns HI for now
-  Future<Podcast> getPodcast() async {
-    return list[0];
-  }
-
   void addPodcast(url) async {
     list.add(await _createPodcast(url));
   }
@@ -46,7 +53,7 @@ class PodcastLibrary {
     var response = await client.get(Uri.parse(url));
     var feed = RssFeed.parse(response.body);
 
-    final pod = Podcast(feed.title);
+    final pod = Podcast(feed.title ?? "-", url);
     var list = feed.items;
     if (list != null) {
       for (var ep in list) {
@@ -56,4 +63,8 @@ class PodcastLibrary {
 
     return pod;
   }
+
+  Map<String, dynamic> toJson() => {
+    "podcasts" : list
+  };
 }
