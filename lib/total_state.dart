@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lytt/player.dart';
 import 'package:lytt/podcast.dart';
-import 'package:lytt/storage_manager.dart';
 
 class LyttApp extends StatefulWidget {
   const LyttApp({Key? key, required this.title}) : super(key: key);
@@ -125,19 +122,12 @@ class _LyttApp extends State<LyttApp> {
   }
 
   Widget newPodcastPage() {
-    final s = StorageHandler();
     return Scaffold(
         appBar: AppBar(title: const Text("New podcast")),
         body: Column(children: [
           TextField(onSubmitted: (url) {
             lib.addPodcast(url);
-            s.writeString(jsonEncode(lib));
           }),
-          FutureBuilder(
-              future: s.readString(),
-              builder: (BuildContext context, AsyncSnapshot<String> last) {
-                return Text(last.requireData);
-              }),
         ]));
   }
 }

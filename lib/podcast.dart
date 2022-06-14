@@ -1,22 +1,30 @@
+import 'dart:convert';
+
 import 'package:http/io_client.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+import 'package:lytt/storage_manager.dart';
 import 'package:webfeed/webfeed.dart';
 
+part 'podcast.g.dart';
+
+@JsonSerializable()
 class Episode {
   var url;
   var name;
 
   Episode(this.url, this.name);
 
-  Map<String, dynamic> toJson() => {
-    'url' : url,
-    'name' : name
-  };
+  /// JSON methods
+  factory Episode.fromJson(Map<String, dynamic> json) => _$EpisodeFromJson(json);
+  Map<String, dynamic> toJson() => _$EpisodeToJson(this);
 }
 
+@JsonSerializable()
 class Podcast {
   String name;
   String url;
-  final List<Episode> episodes = [];
+  List<Episode> episodes = [];
 
   Podcast(this.name, this.url);
 
@@ -24,28 +32,32 @@ class Podcast {
     episodes.add(e);
   }
 
-  Map<String, dynamic> toJson() => {
-    'name' : name,
-    'url' : url,
-    'episodes' : episodes
-  };
+  /// JSON methods
+  factory Podcast.fromJson(Map<String, dynamic> json) => _$PodcastFromJson(json);
+  Map<String, dynamic> toJson() => _$PodcastToJson(this);
 }
 
 /// Library for managing podcasts
+@JsonSerializable()
 class PodcastLibrary {
-  final List<Podcast> list = [];
+  List<Podcast> podcasts = [];
+  final storage = StorageHandler();
 
-  /// Creates HI when started
   PodcastLibrary() {
-    addPodcast("http://www.hellointernet.fm/podcast?format=rss");
+    loadPodcast();
+  }
+
+  void loadPodcast() async {
+    podcasts = PodcastLibrary.fromJson(jsonDecode(await storage.readString())).podcasts;
   }
 
   Future<List<Podcast>> getPodcasts() async {
-    return list;
+    return podcasts;
   }
 
   void addPodcast(url) async {
-    list.add(await _createPodcast(url));
+    podcasts.add(await _createPodcast(url));
+    storage.writeString(jsonEncode(this));
   }
 
   Future<Podcast> _createPodcast(String url) async {
@@ -64,7 +76,7 @@ class PodcastLibrary {
     return pod;
   }
 
-  Map<String, dynamic> toJson() => {
-    "podcasts" : list
-  };
+  /// JSON methods
+  factory PodcastLibrary.fromJson(Map<String, dynamic> json) => _$PodcastLibraryFromJson(json);
+  Map<String, dynamic> toJson() => _$PodcastLibraryToJson(this);
 }
