@@ -88,7 +88,7 @@ class _LyttApp extends State<LyttApp> {
     List<Widget> list = [];
     for (Podcast p in podcastList) {
       list.add(ListTile(
-        title: Text(p.name),
+        title: Text(p.title),
         onTap: () {
           setState(() {
             Navigator.push(context,
@@ -102,7 +102,7 @@ class _LyttApp extends State<LyttApp> {
 
   Widget selectionEpisodes(Podcast p) {
     return Scaffold(
-        appBar: AppBar(title: Text(p.name)),
+        appBar: AppBar(title: Text(p.title)),
         body: ListView(children: episodeList(p)));
   }
 
@@ -110,7 +110,7 @@ class _LyttApp extends State<LyttApp> {
     List<Widget> list = [];
     for (Episode e in p.episodes) {
       list.add(ListTile(
-        title: Text(e.name),
+        title: Text(e.title),
         onTap: () {
           setState(() {
             player.setURL(e.url);

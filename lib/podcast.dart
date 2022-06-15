@@ -10,10 +10,27 @@ part 'podcast.g.dart';
 
 @JsonSerializable()
 class Episode {
-  var url;
-  var name;
+  late String url;
+  late String title;
 
-  Episode(this.url, this.name);
+  String? description;
+  bool? explicit;
+  String? guid;
+  Duration? duration;
+  DateTime? pubDate;
+
+  Episode(this.url, this.title);
+
+  Episode.fromFeed(RssItem item) {
+    url = item.enclosure!.url!;
+    title = item.title!;
+
+    description = item.description ?? item.itunes?.summary;
+    explicit = item.itunes?.explicit;
+    guid = item.guid;
+    duration = item.itunes?.duration;
+    pubDate = item.pubDate;
+  }
 
   /// JSON methods
   factory Episode.fromJson(Map<String, dynamic> json) => _$EpisodeFromJson(json);
@@ -22,11 +39,42 @@ class Episode {
 
 @JsonSerializable()
 class Podcast {
-  String name;
-  String url;
+  /// Must
+  late String title;
+  late String link;
+  late String image;
+
+  /// Strongly recommended
+  String? description;
+  String? owner;
+  String? ownerEmail;
+  String? author;
+
+  /// Recommended (implemented later)
+  /*
+  String? category;
+  bool? explicit;
+  String? language;
+   */
+
   List<Episode> episodes = [];
 
-  Podcast(this.name, this.url);
+  Podcast(this.title, this.link, this.image, this.description, this.owner, this.author);
+
+  Podcast.fromFeed(RssFeed feed) {
+    title = feed.title!;
+    link = feed.link!;
+    image = (feed.image?.url)??(feed.itunes!.image!.href!);
+
+    description = feed.description ?? feed.itunes?.summary;
+    owner = feed.itunes?.owner?.name;
+    ownerEmail = feed.itunes?.owner?.email;
+    author = feed.author ?? feed.itunes?.author;
+
+    for (var ep in feed.items!) {
+      episodes.add(Episode.fromFeed(ep));
+    }
+  }
 
   void addEpisode(Episode e) {
     episodes.add(e);
@@ -65,15 +113,7 @@ class PodcastLibrary {
     var response = await client.get(Uri.parse(url));
     var feed = RssFeed.parse(response.body);
 
-    final pod = Podcast(feed.title ?? "-", url);
-    var list = feed.items;
-    if (list != null) {
-      for (var ep in list) {
-        pod.addEpisode(Episode(ep.enclosure?.url, ep.title));
-      }
-    }
-
-    return pod;
+    return Podcast.fromFeed(feed);
   }
 
   /// JSON methods
