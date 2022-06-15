@@ -9,6 +9,7 @@ part of 'podcast.dart';
 Episode _$EpisodeFromJson(Map<String, dynamic> json) => Episode(
       json['url'] as String,
       json['title'] as String,
+      json['podcastTitle'] as String,
     )
       ..description = json['description'] as String?
       ..explicit = json['explicit'] as bool?
@@ -23,6 +24,7 @@ Episode _$EpisodeFromJson(Map<String, dynamic> json) => Episode(
 Map<String, dynamic> _$EpisodeToJson(Episode instance) => <String, dynamic>{
       'url': instance.url,
       'title': instance.title,
+      'podcastTitle': instance.podcastTitle,
       'description': instance.description,
       'explicit': instance.explicit,
       'guid': instance.guid,

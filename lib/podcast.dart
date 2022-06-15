@@ -12,6 +12,7 @@ part 'podcast.g.dart';
 class Episode {
   late String url;
   late String title;
+  String podcastTitle;
 
   String? description;
   bool? explicit;
@@ -19,9 +20,14 @@ class Episode {
   Duration? duration;
   DateTime? pubDate;
 
-  Episode(this.url, this.title);
+  Episode(this.url, this.title, this.podcastTitle);
 
-  Episode.fromFeed(RssItem item) {
+  void download() {
+    final storage = StorageHandler();
+    storage.downloadFile(this);
+  }
+
+  Episode.fromFeed(RssItem item, this.podcastTitle) {
     url = item.enclosure!.url!;
     title = item.title!;
 
@@ -74,7 +80,7 @@ class Podcast {
     author = feed.author ?? feed.itunes?.author;
 
     for (var ep in feed.items!) {
-      episodes.add(Episode.fromFeed(ep));
+      episodes.add(Episode.fromFeed(ep, title));
     }
   }
 

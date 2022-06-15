@@ -11,7 +11,7 @@ class Player {
   }
 
   void setEpisode(Podcast podcast, Episode episode) async {
-    _player.setAudioSource(await _storage.episodeSource(podcast, episode));
+    _player.setAudioSource(await _storage.episodeSource(episode));
   }
 
   bool isPlaying() {

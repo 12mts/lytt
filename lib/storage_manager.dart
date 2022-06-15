@@ -43,9 +43,9 @@ class StorageHandler {
   }
 
 
-  Future<String> _localDirectoryPodcast(Podcast podcast) async {
+  Future<String> _localDirectoryPodcast(Episode episode) async {
     final path = await _localPath;
-    final directory = Directory("$path\\podcast\\${podcast.title}");
+    final directory = Directory("$path\\podcast\\${episode.podcastTitle}");
 
     if (!directory.existsSync()) {
       directory.createSync(recursive: true);
@@ -53,13 +53,14 @@ class StorageHandler {
     return directory.path;
   }
 
-  Future<File> _localFileDownloads(Podcast podcast, Episode episode) async {
-    final path = await _localDirectoryPodcast(podcast);
-    return File('$path/${episode.url.hashCode.toRadixString(32)}.mp3');
+  Future<File> _localFileDownloads(Episode episode) async {
+    final path = await _localDirectoryPodcast(episode);
+    return File('$path/${episode.title.hashCode.toRadixString(32)}'
+        '${episode.url.hashCode.toRadixString(32)}.mp3');
   }
 
-  void downloadFile(Podcast podcast, Episode episode) async {
-    final file = await _localFileDownloads(podcast, episode);
+  void downloadFile(Episode episode) async {
+    final file = await _localFileDownloads(episode);
 
     final client = IOClient();
     var response = await client.get(Uri.parse(episode.url));
@@ -67,9 +68,9 @@ class StorageHandler {
     file.writeAsBytes(response.bodyBytes);
   }
 
-  Future<AudioSource> episodeSource(Podcast podcast, Episode episode) async {
+  Future<AudioSource> episodeSource(Episode episode) async {
     Uri uri;
-    var pos = await _localFileDownloads(podcast, episode);
+    var pos = await _localFileDownloads(episode);
     if (await(pos).exists()) {
         uri = pos.uri;
     } else {
