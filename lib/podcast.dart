@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:http/io_client.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'package:lytt/storage_manager.dart';
+import 'package:lytt/io_manager.dart';
 import 'package:webfeed/webfeed.dart';
 
 part 'podcast.g.dart';
@@ -128,9 +127,7 @@ class PodcastLibrary {
   }
 
   Future<Podcast> _createPodcast(String url) async {
-    final client = IOClient();
-    var response = await client.get(Uri.parse(url));
-    var feed = RssFeed.parse(response.body);
+    var feed = RssFeed.parse(await WebHandler().getAsString(url));
 
     return Podcast.fromFeed(feed);
   }

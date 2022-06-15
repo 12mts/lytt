@@ -59,11 +59,7 @@ class StorageHandler {
 
   void downloadFile(Episode episode) async {
     final file = await _localFileDownloads(episode);
-
-    final client = IOClient();
-    var response = await client.get(Uri.parse(episode.url));
-    
-    file.writeAsBytes(response.bodyBytes);
+    file.writeAsBytes(await WebHandler().getAsBytes(episode.url));
   }
 
   Future<Uri> episodeUri(Episode episode) async {
@@ -72,5 +68,17 @@ class StorageHandler {
         return pos.uri;
     }
     return Uri.parse(episode.url);
+  }
+}
+
+class WebHandler {
+  final client = IOClient();
+
+  Future<List<int>> getAsBytes(url) async {
+    return (await client.get(Uri.parse(url))).bodyBytes;
+  }
+
+  Future<String> getAsString(url) async {
+    return (await client.get(Uri.parse(url))).body;
   }
 }
