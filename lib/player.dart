@@ -1,5 +1,5 @@
 import 'package:just_audio/just_audio.dart';
-import 'package:lytt/podcast.dart';
+import 'package:lytt/podcast/podcast.dart';
 
 class Player {
   final _player = AudioPlayer();

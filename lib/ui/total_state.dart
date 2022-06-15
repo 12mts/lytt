@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lytt/player.dart';
-import 'package:lytt/podcast.dart';
+import 'package:lytt/podcast/podcast.dart';
 
 class LyttApp extends StatefulWidget {
   const LyttApp({Key? key, required this.title}) : super(key: key);
@@ -125,22 +125,6 @@ class _LyttApp extends State<LyttApp> {
     }
     return list;
   }
-  /*
-  List<Widget> episodeList(Podcast p) {
-    List<Widget> list = [];
-    for (Episode e in p.episodes) {
-      list.add(ListTile(
-        title: Text(e.title),
-        onTap: () {
-          setState(() {
-            player.setEpisode(p, e);
-          });
-        },
-      ));
-    }
-    return list;
-  }
-  */
 
   Widget newPodcastPage() {
     return Scaffold(

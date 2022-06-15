@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:http/io_client.dart';
-import 'package:lytt/podcast.dart';
+import 'package:lytt/podcast/podcast.dart';
 import 'package:path_provider/path_provider.dart';
 
 class StorageHandler {
