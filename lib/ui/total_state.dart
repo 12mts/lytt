@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:lytt/player.dart';
 import 'package:lytt/podcast/podcast.dart';
+import 'package:lytt/ui/player_route.dart';
+import 'package:lytt/ui/podcast_route.dart';
 
 class LyttApp extends StatefulWidget {
   const LyttApp({Key? key, required this.title}) : super(key: key);
@@ -28,111 +29,11 @@ class _LyttApp extends State<LyttApp> {
             // clicking the menu button
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => selectionPodcast()));
-            }),
+                  MaterialPageRoute(builder: (context) =>
+                      PodcastRoute().selectionPodcast(context, lib)));
+            })
       ]),
-      body: playerWidget(player),
+      body: PlayerRoute().playerWidget(player, this),
     );
-  }
-
-  /// The player widget
-  Widget playerWidget(Player player) {
-    var playPause = "play";
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text("Hello Internet"),
-        OutlinedButton(
-          onPressed: () {
-            setState(() {
-              playPause = player.startStop() ? "Play" : "Pause";
-            });
-          },
-          child: Text(playPause),
-        ),
-        Text(player.progress()),
-        TextField(
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-          ],
-          onSubmitted: (time) {
-            player.setTime(int.parse(time));
-          },
-        )
-      ],
-    );
-  }
-
-  /// The select podcasts and episodes
-  Widget selectionPodcast() {
-    return Scaffold(
-        appBar: AppBar(title: const Text("Podcasts"), actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => newPodcastPage()));
-              },
-              icon: const Icon(Icons.add))
-        ]),
-        body: FutureBuilder(
-          future: lib.getPodcasts(),
-          builder: (BuildContext context, AsyncSnapshot<List<Podcast>> pod) {
-            return ListView(children: podcastList(pod.requireData));
-          },
-        ));
-  }
-
-  /// Takes a podcast and returns list of all episodes as widgets
-  List<Widget> podcastList(List<Podcast> podcastList) {
-    List<Widget> list = [];
-    for (Podcast p in podcastList) {
-      list.add(ListTile(
-        title: Text(p.title),
-        onTap: () {
-          setState(() {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => selectionEpisodes(p)));
-          });
-        },
-      ));
-    }
-    return list;
-  }
-
-  Widget selectionEpisodes(Podcast p) {
-    return Scaffold(
-        appBar: AppBar(title: Text(p.title)),
-        body: ListView(children: episodeList(p)));
-  }
-
-  List<Widget> episodeList(Podcast p) {
-    List<Widget> list = [];
-    for (Episode e in p.episodes) {
-      list.add(Card(
-        child: Row(
-          children: [
-            Text(e.title),
-            IconButton(onPressed: () {
-              player.setEpisode(p, e);},
-                icon: const Icon(Icons.play_arrow)),
-            IconButton(onPressed: () {
-              e.download();
-            }, icon: const Icon(Icons.file_download))
-          ],
-        ),
-      ));
-    }
-    return list;
-  }
-
-  Widget newPodcastPage() {
-    return Scaffold(
-        appBar: AppBar(title: const Text("New podcast")),
-        body: Column(children: [
-          TextField(onSubmitted: (url) {
-            lib.addPodcast(url);
-          }),
-        ]));
   }
 }
