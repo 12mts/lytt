@@ -41,6 +41,11 @@ class Episode {
   /// JSON methods
   factory Episode.fromJson(Map<String, dynamic> json) => _$EpisodeFromJson(json);
   Map<String, dynamic> toJson() => _$EpisodeToJson(this);
+
+  Future<Uri> uri() async {
+    final storage = StorageHandler();
+    return storage.episodeUri(this);
+  }
 }
 
 @JsonSerializable()

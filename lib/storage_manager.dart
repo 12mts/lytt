@@ -1,8 +1,6 @@
-
 import 'dart:io';
 
 import 'package:http/io_client.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:lytt/podcast.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -37,7 +35,7 @@ class StorageHandler {
 
       return contents;
     } catch (e) {
-      // If encountering an error, return 0
+      // If encountering an error, return -
       return "-";
     }
   }
@@ -68,16 +66,11 @@ class StorageHandler {
     file.writeAsBytes(response.bodyBytes);
   }
 
-  Future<AudioSource> episodeSource(Episode episode) async {
-    Uri uri;
+  Future<Uri> episodeUri(Episode episode) async {
     var pos = await _localFileDownloads(episode);
     if (await(pos).exists()) {
-        uri = pos.uri;
-    } else {
-        uri = Uri.parse(episode.url);
+        return pos.uri;
     }
-
-    return AudioSource.uri(uri);
+    return Uri.parse(episode.url);
   }
-
 }

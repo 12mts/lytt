@@ -1,17 +1,15 @@
 import 'package:just_audio/just_audio.dart';
 import 'package:lytt/podcast.dart';
-import 'package:lytt/storage_manager.dart';
 
 class Player {
   final _player = AudioPlayer();
-  final _storage = StorageHandler();
 
   Player(url) {
     _player.setUrl(url);
   }
 
   void setEpisode(Podcast podcast, Episode episode) async {
-    _player.setAudioSource(await _storage.episodeSource(episode));
+    _player.setAudioSource(AudioSource.uri(await episode.uri()));
   }
 
   bool isPlaying() {
