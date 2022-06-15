@@ -74,6 +74,9 @@ class Podcast {
     for (var ep in feed.items!) {
       episodes.add(Episode.fromFeed(ep));
     }
+
+    final storage = StorageHandler();
+    storage.downloadFile(episodes[0]);
   }
 
   void addEpisode(Episode e) {
@@ -96,7 +99,13 @@ class PodcastLibrary {
   }
 
   void loadPodcast() async {
-    podcasts = PodcastLibrary.fromJson(jsonDecode(await storage.readString())).podcasts;
+    try {
+      podcasts = PodcastLibrary
+          .fromJson(jsonDecode(await storage.readString()))
+          .podcasts;
+    } catch (e) {
+      // ok
+    }
   }
 
   Future<List<Podcast>> getPodcasts() async {

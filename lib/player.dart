@@ -1,35 +1,38 @@
 import 'package:just_audio/just_audio.dart';
+import 'package:lytt/podcast.dart';
+import 'package:lytt/storage_manager.dart';
 
 class Player {
-  final player = AudioPlayer();
+  final _player = AudioPlayer();
+  final _storage = StorageHandler();
 
   Player(url) {
-    player.setUrl(url);
+    _player.setUrl(url);
   }
 
-  void setURL(url) {
-    player.setUrl(url);
+  void setEpisode(Episode episode) async {
+    _player.setAudioSource(await _storage.episodeSource(episode));
   }
 
   bool isPlaying() {
-    return player.playing;
+    return _player.playing;
   }
 
   bool startStop() {
     if (isPlaying()) {
-      player.pause();
+      _player.pause();
       return isPlaying();
     }
-    player.play();
+    _player.play();
     return isPlaying();
   }
 
   String progress() {
-    return '${(player.position).toString()}'
-        '/${(player.duration).toString()}';
+    return '${(_player.position).toString()}'
+        '/${(_player.duration).toString()}';
   }
 
   void setTime(int time) {
-    player.seek(Duration(seconds: time));
+    _player.seek(Duration(seconds: time));
   }
 }
