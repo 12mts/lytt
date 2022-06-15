@@ -76,9 +76,6 @@ class Podcast {
     for (var ep in feed.items!) {
       episodes.add(Episode.fromFeed(ep));
     }
-
-    final storage = StorageHandler();
-    storage.downloadFile(this, episodes[0]);
   }
 
   void addEpisode(Episode e) {
