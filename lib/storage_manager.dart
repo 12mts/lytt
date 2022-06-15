@@ -7,24 +7,27 @@ import 'package:lytt/podcast.dart';
 import 'package:path_provider/path_provider.dart';
 
 class StorageHandler {
+  /// Source folder
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
 
-    return '${directory.path}/lytt';
+    return '${directory.path}\\lytt';
   }
 
+  /// File for PodcastLibrary
   Future<File> get _localFilePodcastLibrary async {
     final path = await _localPath;
-    return File('$path/podcast_info.txt');
+    return File('$path\\podcast_info.txt');
   }
 
+  /// Write to PodcastLibrary storage
   Future<File> writeString(String text) async {
     final file = await _localFilePodcastLibrary;
 
     // Write the file
     return file.writeAsString(text);
   }
-
+  /// Read from PodcastLibrary storage
   Future<String> readString() async {
     try {
       final file = await _localFilePodcastLibrary;
@@ -40,13 +43,23 @@ class StorageHandler {
   }
 
 
-  Future<File> _localFileDownloads(Episode episode) async {
+  Future<String> _localDirectoryPodcast(Podcast podcast) async {
     final path = await _localPath;
-    return File('$path/podcast_downloads/${episode.url.hashCode.toRadixString(32)}.mp3');
+    final directory = Directory("$path\\podcast\\${podcast.title}");
+
+    if (!directory.existsSync()) {
+      directory.createSync(recursive: true);
+    }
+    return directory.path;
   }
 
-  void downloadFile(Episode episode) async {
-    final file = await _localFileDownloads(episode);
+  Future<File> _localFileDownloads(Podcast podcast, Episode episode) async {
+    final path = await _localDirectoryPodcast(podcast);
+    return File('$path/${episode.url.hashCode.toRadixString(32)}.mp3');
+  }
+
+  void downloadFile(Podcast podcast, Episode episode) async {
+    final file = await _localFileDownloads(podcast, episode);
 
     final client = IOClient();
     var response = await client.get(Uri.parse(episode.url));
@@ -54,9 +67,9 @@ class StorageHandler {
     file.writeAsBytes(response.bodyBytes);
   }
 
-  Future<AudioSource> episodeSource(Episode episode) async {
+  Future<AudioSource> episodeSource(Podcast podcast, Episode episode) async {
     Uri uri;
-    var pos = await _localFileDownloads(episode);
+    var pos = await _localFileDownloads(podcast, episode);
     if (await(pos).exists()) {
         uri = pos.uri;
     } else {

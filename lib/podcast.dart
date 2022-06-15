@@ -43,6 +43,7 @@ class Podcast {
   late String title;
   late String link;
   late String image;
+  int counter = 0;
 
   /// Strongly recommended
   String? description;
@@ -59,7 +60,8 @@ class Podcast {
 
   List<Episode> episodes = [];
 
-  Podcast(this.title, this.link, this.image, this.description, this.owner, this.author);
+  Podcast(this.title, this.link, this.image, this.counter,
+      this.description, this.owner, this.author);
 
   Podcast.fromFeed(RssFeed feed) {
     title = feed.title!;
@@ -76,7 +78,7 @@ class Podcast {
     }
 
     final storage = StorageHandler();
-    storage.downloadFile(episodes[0]);
+    storage.downloadFile(this, episodes[0]);
   }
 
   void addEpisode(Episode e) {

@@ -113,7 +113,7 @@ class _LyttApp extends State<LyttApp> {
         title: Text(e.title),
         onTap: () {
           setState(() {
-            player.setEpisode(e);
+            player.setEpisode(p, e);
           });
         },
       ));

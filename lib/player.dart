@@ -10,8 +10,8 @@ class Player {
     _player.setUrl(url);
   }
 
-  void setEpisode(Episode episode) async {
-    _player.setAudioSource(await _storage.episodeSource(episode));
+  void setEpisode(Podcast podcast, Episode episode) async {
+    _player.setAudioSource(await _storage.episodeSource(podcast, episode));
   }
 
   bool isPlaying() {
