@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:lytt/player.dart';
+import 'package:lytt/player_audioplayers.dart';
 import 'package:lytt/podcast/episode.dart';
 import 'package:lytt/podcast/podcast.dart';
 import 'package:lytt/podcast/podcast_library.dart';
@@ -49,7 +50,7 @@ class PlayerController {
   late final Player _player;
 
   PlayerController(Controller controller) {
-    _player = Player(episode.url);
+    _player = PlayerAudio(episode.url);
   }
 
   void playEpisode(Episode episode) {

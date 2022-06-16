@@ -9,6 +9,7 @@ class Player {
 
   void setEpisode(Future<Uri> uri) async {
     _player.setAudioSource(AudioSource.uri(await uri));
+
   }
 
   bool isPlaying() {
