@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lytt/player.dart';
-import 'package:lytt/podcast/podcast.dart';
+import 'package:lytt/podcast/total_podcast.dart';
 import 'package:lytt/ui/player_route.dart';
 import 'package:lytt/ui/podcast_route.dart';
 

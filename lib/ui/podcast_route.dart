@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../podcast/podcast.dart';
+import '../podcast/total_podcast.dart';
 import 'episode_route.dart';
 
 class PodcastRoute {

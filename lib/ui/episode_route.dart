@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../podcast/episode.dart';
 import '../podcast/podcast.dart';
 
 class EpisodeRoute {
