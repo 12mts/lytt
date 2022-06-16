@@ -19,14 +19,14 @@ class StorageHandler {
   }
 
   /// Write to PodcastLibrary storage
-  Future<File> writeString(String text) async {
+  Future<File> writePodcastInfo(String text) async {
     final file = await _localFilePodcastLibrary;
 
     // Write the file
     return file.writeAsString(text);
   }
   /// Read from PodcastLibrary storage
-  Future<String> readString() async {
+  Future<String> readPodcastInfo() async {
     try {
       final file = await _localFilePodcastLibrary;
 
@@ -51,19 +51,19 @@ class StorageHandler {
     return directory.path;
   }
 
-  Future<File> _localFileDownloads(Episode episode) async {
+  Future<File> _localFileEpisode(Episode episode) async {
     final path = await _localDirectoryPodcast(episode);
     return File('$path/${episode.title.hashCode.toRadixString(32)}'
         '${episode.url.hashCode.toRadixString(32)}.mp3');
   }
 
-  void downloadFile(Episode episode) async {
-    final file = await _localFileDownloads(episode);
+  void downloadEpisode(Episode episode) async {
+    final file = await _localFileEpisode(episode);
     file.writeAsBytes(await WebHandler().getAsBytes(episode.url));
   }
 
   Future<Uri> episodeUri(Episode episode) async {
-    var pos = await _localFileDownloads(episode);
+    var pos = await _localFileEpisode(episode);
     if (await(pos).exists()) {
         return pos.uri;
     }

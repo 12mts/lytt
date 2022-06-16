@@ -17,7 +17,7 @@ class Controller {
 
   Controller() {
     player = PlayerController(this);
-    _storage.readString().then(
+    _storage.readPodcastInfo().then(
         (string) => {
           _library.loadPodcasts(jsonDecode(string))
         }
@@ -29,7 +29,7 @@ class Controller {
   }
 
   void downloadEpisode(Episode episode) {
-    _storage.downloadFile(episode);
+    _storage.downloadEpisode(episode);
   }
 
   void playEpisode(Episode episode) {
@@ -38,7 +38,7 @@ class Controller {
 
   void addPodcast(String url) async {
     await _library.addPodcast(_web.getAsString(url));
-    _storage.writeString(jsonEncode(_library));
+    _storage.writePodcastInfo(jsonEncode(_library));
   }
 }
 
