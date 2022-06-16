@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lytt/controller.dart';
 import 'package:lytt/ui/total_state.dart';
-
-import '../player.dart';
 
 class PlayerRoute {
 
   /// The player widget
-  static Widget playerWidget(Player player, State<LyttApp> state) {
-    var playPause = "play";
+  static Widget playerWidget(PlayerController player, State<LyttApp> state) {
+    String playPause = "play";
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

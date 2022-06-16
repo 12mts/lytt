@@ -11,10 +11,11 @@ import 'io_manager.dart';
 class Controller {
   final _storage = StorageHandler();
   final _library = PodcastLibrary();
-  final player = Player("http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3");
   final _web = WebHandler();
+  late final PlayerController player;
 
   Controller() {
+    player = PlayerController(this);
     _storage.readString().then(
         (string) => {
           _library.loadPodcasts(jsonDecode(string))
@@ -31,12 +32,41 @@ class Controller {
   }
 
   void playEpisode(Episode episode) {
-    player.setEpisode(_storage.episodeUri(episode));
+    player.playEpisode(episode);
   }
 
   void addPodcast(String url) async {
     await _library.addPodcast(_web.getAsString(url));
     _storage.writeString(jsonEncode(_library));
+  }
+}
+
+class PlayerController {
+  final _storage = StorageHandler();
+  Episode episode = Episode(
+      "http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3",
+      "H.I. #3: Four Light Bulbs", "Hello Internet");
+  late final Player _player;
+
+  PlayerController(Controller controller) {
+    _player = Player(episode.url);
+  }
+
+  void playEpisode(Episode episode) {
+    this.episode = episode;
+    _player.setEpisode(_storage.episodeUri(episode));
+  }
+
+  bool startStop() {
+    return _player.startStop();
+  }
+
+  String progress() {
+    return _player.progress();
+  }
+
+  void setTime(int parse) {
+    _player.setTime(parse);
   }
 
 }
