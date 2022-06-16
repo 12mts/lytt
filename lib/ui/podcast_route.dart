@@ -7,7 +7,7 @@ import 'episode_route.dart';
 
 class PodcastRoute {
   /// The select podcasts and episodes
-  Widget selectionPodcast(BuildContext context, Controller controller) {
+  static Widget selectionPodcast(BuildContext context, Controller controller) {
     return Scaffold(
         appBar: AppBar(title: const Text("Podcasts"), actions: [
           IconButton(
@@ -21,7 +21,7 @@ class PodcastRoute {
   }
 
   /// Takes a podcast and returns list of all episodes as widgets
-  List<Widget> _podcastList(BuildContext context, Controller controller) {
+  static List<Widget> _podcastList(BuildContext context, Controller controller) {
     List<Widget> list = [];
     for (Podcast p in controller.getPodcasts()) {
       list.add(ListTile(
@@ -29,14 +29,14 @@ class PodcastRoute {
         onTap: () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) =>
-                    EpisodeRoute().selectionEpisodes(controller, p)));
+                    EpisodeRoute.selectionEpisodes(controller, p)));
         },
       ));
     }
     return list;
   }
 
-  Widget _newPodcastPage(Controller controller) {
+  static Widget _newPodcastPage(Controller controller) {
     return Scaffold(
         appBar: AppBar(title: const Text("New podcast")),
         body: Column(children: [

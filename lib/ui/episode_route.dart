@@ -6,13 +6,13 @@ import '../podcast/episode.dart';
 import '../podcast/podcast.dart';
 
 class EpisodeRoute {
-  Widget selectionEpisodes(Controller controller, Podcast p) {
+  static Widget selectionEpisodes(Controller controller, Podcast p) {
     return Scaffold(
         appBar: AppBar(title: Text(p.title)),
         body: ListView(children: episodeList(controller, p)));
   }
 
-  List<Widget> episodeList(Controller controller, Podcast p) {
+  static List<Widget> episodeList(Controller controller, Podcast p) {
     List<Widget> list = [];
     for (Episode e in p.episodes) {
       list.add(Card(

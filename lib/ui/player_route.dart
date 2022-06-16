@@ -7,7 +7,7 @@ import '../player.dart';
 class PlayerRoute {
 
   /// The player widget
-  Widget playerWidget(Player player, State<LyttApp> state) {
+  static Widget playerWidget(Player player, State<LyttApp> state) {
     var playPause = "play";
 
     return Column(

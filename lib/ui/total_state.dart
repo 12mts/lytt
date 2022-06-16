@@ -28,10 +28,10 @@ class _LyttApp extends State<LyttApp> {
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) =>
-                      PodcastRoute().selectionPodcast(context, controller)));
+                      PodcastRoute.selectionPodcast(context, controller)));
             })
       ]),
-      body: PlayerRoute().playerWidget(controller.player, this),
+      body: PlayerRoute.playerWidget(controller.player, this),
     );
   }
 }
