@@ -2,26 +2,22 @@ import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
 
-import 'package:lytt/io_manager.dart';
 import 'package:lytt/podcast/podcast.dart';
 import 'package:webfeed/webfeed.dart';
 
-part 'total_podcast.g.dart';
+part 'podcast_library.g.dart';
 
 /// Library for managing podcasts
 @JsonSerializable()
 class PodcastLibrary {
   List<Podcast> podcasts = [];
-  final storage = StorageHandler();
 
-  PodcastLibrary() {
-    loadPodcast();
-  }
+  PodcastLibrary();
 
-  void loadPodcast() async {
+  void loadPodcast(Future<String> string) async {
     try {
       podcasts = PodcastLibrary
-          .fromJson(jsonDecode(await storage.readString()))
+          .fromJson(jsonDecode(await string))
           .podcasts;
     } catch (e) {
       // ok
@@ -32,15 +28,10 @@ class PodcastLibrary {
     return podcasts;
   }
 
-  void addPodcast(url) async {
-    podcasts.add(await _createPodcast(url));
-    storage.writeString(jsonEncode(this));
-  }
-
-  Future<Podcast> _createPodcast(String url) async {
-    var feed = RssFeed.parse(await WebHandler().getAsString(url));
-
-    return Podcast.fromFeed(feed);
+  void addPodcast(Future<String> rss) async {
+    var feed = RssFeed.parse(await rss);
+    final pod = Podcast.fromFeed(feed);
+    podcasts.add(pod);
   }
 
   /// JSON methods

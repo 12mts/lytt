@@ -1,5 +1,4 @@
 import 'package:just_audio/just_audio.dart';
-import 'package:lytt/podcast/episode.dart';
 
 class Player {
   final _player = AudioPlayer();
@@ -8,8 +7,8 @@ class Player {
     _player.setUrl(url);
   }
 
-  void setEpisode(Episode episode) async {
-    _player.setAudioSource(AudioSource.uri(await episode.uri()));
+  void setEpisode(Future<Uri> uri) async {
+    _player.setAudioSource(AudioSource.uri(await uri));
   }
 
   bool isPlaying() {

@@ -1,17 +1,18 @@
 
 import 'package:flutter/material.dart';
 
+import '../controller.dart';
 import '../podcast/episode.dart';
 import '../podcast/podcast.dart';
 
 class EpisodeRoute {
-  Widget selectionEpisodes(Podcast p) {
+  Widget selectionEpisodes(Controller controller, Podcast p) {
     return Scaffold(
         appBar: AppBar(title: Text(p.title)),
-        body: ListView(children: episodeList(p)));
+        body: ListView(children: episodeList(controller, p)));
   }
 
-  List<Widget> episodeList(Podcast p) {
+  List<Widget> episodeList(Controller controller, Podcast p) {
     List<Widget> list = [];
     for (Episode e in p.episodes) {
       list.add(Card(
@@ -19,10 +20,10 @@ class EpisodeRoute {
           children: [
             Text(e.title),
             IconButton(onPressed: () {
-              """player.setEpisode(p, e)""";},
+              controller.playEpisode(e);},
                 icon: const Icon(Icons.play_arrow)),
             IconButton(onPressed: () {
-              e.download();
+              controller.downloadEpisode(e);
             }, icon: const Icon(Icons.file_download))
           ],
         ),

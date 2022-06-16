@@ -1,52 +1,47 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../controller.dart';
 import '../podcast/podcast.dart';
-import '../podcast/total_podcast.dart';
 import 'episode_route.dart';
 
 class PodcastRoute {
   /// The select podcasts and episodes
-  Widget selectionPodcast(context, PodcastLibrary lib) {
+  Widget selectionPodcast(BuildContext context, Controller controller) {
     return Scaffold(
         appBar: AppBar(title: const Text("Podcasts"), actions: [
           IconButton(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => _newPodcastPage(lib)));
+                    MaterialPageRoute(builder: (context) => _newPodcastPage(controller)));
               },
               icon: const Icon(Icons.add))
         ]),
-        body: FutureBuilder(
-          future: lib.getPodcasts(),
-          builder: (BuildContext context, AsyncSnapshot<List<Podcast>> pod) {
-            return ListView(children: _podcastList(context, pod.requireData));
-          },
-        ));
+        body: ListView(children: _podcastList(context, controller)));
   }
 
   /// Takes a podcast and returns list of all episodes as widgets
-  List<Widget> _podcastList(context, List<Podcast> podcastList) {
+  List<Widget> _podcastList(BuildContext context, Controller controller) {
     List<Widget> list = [];
-    for (Podcast p in podcastList) {
+    for (Podcast p in controller.getPodcasts()) {
       list.add(ListTile(
         title: Text(p.title),
         onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => EpisodeRoute().selectionEpisodes(p)));
+                MaterialPageRoute(builder: (context) =>
+                    EpisodeRoute().selectionEpisodes(controller, p)));
         },
       ));
     }
     return list;
   }
 
-  Widget _newPodcastPage(PodcastLibrary lib) {
+  Widget _newPodcastPage(Controller controller) {
     return Scaffold(
         appBar: AppBar(title: const Text("New podcast")),
         body: Column(children: [
           TextField(onSubmitted: (url) {
-            lib.addPodcast(url);
+            controller.addPodcast(url);
           }),
         ]));
   }
