@@ -9,6 +9,7 @@ class Episode {
   late String url;
   late String title;
   String podcastTitle;
+  bool downloaded = false;
 
   String? description;
   bool? explicit;
