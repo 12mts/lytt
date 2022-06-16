@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:http/io_client.dart';
 import 'package:lytt/podcast/episode.dart';
+import 'package:lytt/podcast/podcast.dart';
 import 'package:path_provider/path_provider.dart';
 
 class StorageHandler {
@@ -41,9 +42,9 @@ class StorageHandler {
   }
 
 
-  Future<String> _localDirectoryPodcast(Episode episode) async {
+  Future<String> _localDirectoryPodcast(String podcastTitle) async {
     final path = await _localPath;
-    final directory = Directory("$path\\podcast\\${episode.podcastTitle}");
+    final directory = Directory("$path\\podcast\\$podcastTitle");
 
     if (!directory.existsSync()) {
       directory.createSync(recursive: true);
@@ -52,7 +53,7 @@ class StorageHandler {
   }
 
   Future<File> _localFileEpisode(Episode episode) async {
-    final path = await _localDirectoryPodcast(episode);
+    final path = await _localDirectoryPodcast(episode.podcastTitle);
     return File('$path/${episode.title.hashCode.toRadixString(32)}'
         '${episode.url.hashCode.toRadixString(32)}.mp3');
   }
@@ -68,6 +69,16 @@ class StorageHandler {
         return pos.uri;
     }
     return Uri.parse(episode.url);
+  }
+
+  Future<File> localFileImage(String podcastTitle) async {
+    final path = await _localDirectoryPodcast(podcastTitle);
+    return File('$path\\image.png');
+  }
+
+  void downloadImage(Podcast podcast) async {
+    final file = await localFileImage(podcast.title);
+    file.writeAsBytes(await WebHandler().getAsBytes(podcast.image));
   }
 }
 

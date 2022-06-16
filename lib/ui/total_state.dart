@@ -31,7 +31,7 @@ class _LyttApp extends State<LyttApp> {
                       PodcastRoute.selectionPodcast(context, controller)));
             })
       ]),
-      body: PlayerRoute.playerWidget(controller.player, this),
+      body: PlayerRoute.playerWidget(controller, this),
     );
   }
 }

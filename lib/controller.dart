@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:lytt/player.dart';
 import 'package:lytt/player_audioplayers.dart';
@@ -37,8 +38,13 @@ class Controller {
   }
 
   void addPodcast(String url) async {
-    await _library.addPodcast(_web.getAsString(url));
+    final podcast = await _library.addPodcast(_web.getAsString(url));
+    _storage.downloadImage(podcast);
     _storage.writePodcastInfo(jsonEncode(_library));
+  }
+
+  Future<File> imageFile(String podcastTitle) {
+    return _storage.localFileImage(podcastTitle);
   }
 }
 
