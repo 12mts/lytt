@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:lytt/podcast/podcast.dart';
@@ -14,11 +12,10 @@ class PodcastLibrary {
 
   PodcastLibrary();
 
-  void loadPodcast(Future<String> string) async {
+  void loadPodcasts(Map<String, dynamic> json) {
     try {
       podcasts = PodcastLibrary
-          .fromJson(jsonDecode(await string))
-          .podcasts;
+          .fromJson(json).podcasts;
     } catch (e) {
       // ok
     }
@@ -28,10 +25,10 @@ class PodcastLibrary {
     return podcasts;
   }
 
-  void addPodcast(Future<String> rss) async {
-    var feed = RssFeed.parse(await rss);
-    final pod = Podcast.fromFeed(feed);
-    podcasts.add(pod);
+  Future<Podcast> addPodcast(Future<String> rss) async {
+    final podcast = Podcast.fromFeed(RssFeed.parse(await rss));
+    podcasts.add(podcast);
+    return podcast;
   }
 
   /// JSON methods

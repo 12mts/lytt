@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:lytt/player.dart';
 import 'package:lytt/podcast/episode.dart';
 import 'package:lytt/podcast/podcast.dart';
@@ -13,7 +15,11 @@ class Controller {
   final _web = WebHandler();
 
   Controller() {
-    _library.loadPodcast(_storage.readString());
+    _storage.readString().then(
+        (string) => {
+          _library.loadPodcasts(jsonDecode(string))
+        }
+    );
   }
 
   List<Podcast> getPodcasts() {
@@ -28,8 +34,9 @@ class Controller {
     player.setEpisode(_storage.episodeUri(episode));
   }
 
-  void addPodcast(String url) {
-    _library.addPodcast(_web.getAsString(url));
+  void addPodcast(String url) async {
+    await _library.addPodcast(_web.getAsString(url));
+    _storage.writeString(jsonEncode(_library));
   }
 
 }
