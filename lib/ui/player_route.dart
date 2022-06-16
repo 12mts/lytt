@@ -12,7 +12,7 @@ class PlayerRoute {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Hello Internet"),
+        Text(player.episode.title),
         OutlinedButton(
           onPressed: () {
               playPause = player.startStop() ? "Play" : "Pause";
