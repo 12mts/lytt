@@ -4,10 +4,11 @@ import '../controller.dart';
 import '../podcast/podcast.dart';
 
 typedef SelectPodcast = Function(Podcast podcast);
-typedef AddPodcastRoute = Function();
+//typedef AddPodcastRoute = Function();
+typedef AddPodcast = Function(String url);
 
-class PodcastWidget extends StatelessWidget {
-  PodcastWidget(
+class PodcastListWidget extends StatelessWidget {
+  PodcastListWidget(
       {required this.controller,
       required this.selectPodcast,
       required this.addPodcast})
@@ -15,7 +16,7 @@ class PodcastWidget extends StatelessWidget {
 
   final Controller controller;
   final SelectPodcast selectPodcast;
-  final AddPodcastRoute addPodcast;
+  final AddPodcast addPodcast;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,10 @@ class PodcastWidget extends StatelessWidget {
         appBar: AppBar(title: const Text("Podcasts"), actions: [
           IconButton(
               onPressed: () {
-                addPodcast();
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => AddPodcastWidget(controller: controller,
+                      addPodcast: addPodcast)
+                ));
               },
               icon: const Icon(Icons.add))
         ]),
@@ -44,7 +48,6 @@ class PodcastWidget extends StatelessWidget {
   }
 }
 
-typedef AddPodcast = Function(String url);
 
 class AddPodcastWidget extends StatelessWidget {
   AddPodcastWidget({required this.controller, required this.addPodcast})

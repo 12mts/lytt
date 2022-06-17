@@ -4,6 +4,7 @@ import 'package:lytt/ui/player_route.dart';
 import 'package:lytt/ui/podcast_route.dart';
 
 import '../controller.dart';
+import '../podcast/episode.dart';
 import '../podcast/podcast.dart';
 
 class LyttApp extends StatefulWidget {
@@ -24,23 +25,30 @@ class _LyttApp extends State<LyttApp> {
     });
   }
 
+  void _downloadEpisode(Episode episode) {
+    setState(() {
+      controller.downloadEpisode(episode);
+    });
+  }
+
+  void _playEpisode(Episode episode) {
+    setState(() {
+      controller.playEpisode(episode);
+    });
+  }
+
   void _selectPodcast(Podcast podcast) {
     setState(() {
       Navigator.push(context, MaterialPageRoute(builder: (context) =>
-          EpisodeRoute.selectionEpisodes(controller, podcast)));
+          EpisodeListWidget(podcast: podcast, controller: controller,
+              downloadEpisode: _downloadEpisode,
+              playEpisode: _playEpisode)));
     });
   }
 
   void _addPodcast(url) {
     setState(() {
       controller.addPodcast(url);
-    });
-  }
-
-  void _addPodcastRoute() {
-    setState(() {
-      Navigator.push(context, MaterialPageRoute(builder: (context) =>
-          AddPodcastWidget(controller: controller, addPodcast: _addPodcast)));
     });
   }
 
@@ -56,9 +64,9 @@ class _LyttApp extends State<LyttApp> {
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) =>
-                      PodcastWidget(controller: controller,
+                      PodcastListWidget(controller: controller,
                           selectPodcast: _selectPodcast,
-                          addPodcast: _addPodcastRoute)));
+                          addPodcast: _addPodcast)));
             })
       ]),
       body: PlayerWidget(controller: controller,
