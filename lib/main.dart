@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:lytt/ui/total_state.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(
+    title: "lytt",
+    home: LyttApp(title: "test")
+  ));
 }
 
 class MyApp extends StatelessWidget {

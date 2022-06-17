@@ -16,6 +16,12 @@ class _LyttApp extends State<LyttApp> {
   // App state
   final controller = Controller();
 
+  void _playButtonCheck() {
+    setState(() {
+      controller.player.startStop();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +37,8 @@ class _LyttApp extends State<LyttApp> {
                       PodcastRoute.selectionPodcast(context, controller)));
             })
       ]),
-      body: PlayerRoute.playerWidget(controller, this),
+      body: PlayerWidget(controller: controller,
+        playButtonPress: _playButtonCheck,),
     );
   }
 }

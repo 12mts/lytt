@@ -1,4 +1,6 @@
 
+import 'dart:ui';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:webfeed/domain/rss_item.dart';
 
@@ -31,6 +33,25 @@ class Episode {
   }
 
   /// JSON methods
-  factory Episode.fromJson(Map<String, dynamic> json) => _$EpisodeFromJson(json);
+  factory Episode.fromJson(Map<String, dynamic> json) =>
+      _$EpisodeFromJson(json);
+
   Map<String, dynamic> toJson() => _$EpisodeToJson(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is Episode
+        && other.url == url
+        && other.title == title
+        && other.podcastTitle == podcastTitle;
+  }
+
+  @override
+  int get hashCode => hashValues(url, title, podcastTitle);
 }

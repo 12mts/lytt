@@ -3,29 +3,34 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lytt/controller.dart';
-import 'package:lytt/ui/total_state.dart';
 
-class PlayerRoute {
-  /// The player widget
-  static Widget playerWidget(Controller controller, State<LyttApp> state) {
-    String playPause = "play";
-    final episode = controller.player.episode;
+typedef PlayButtonPress = Function();
 
+class PlayerWidget extends StatelessWidget {
+  PlayerWidget({required this.controller,
+  required this.playButtonPress})
+      : super(key: ObjectKey(controller));
+
+  final Controller controller;
+  final PlayButtonPress playButtonPress;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
             child: FutureBuilder(
-                future: controller.imageFile(episode.podcastTitle),
+                future: controller
+                    .imageFile(controller.player.episode.podcastTitle),
                 builder: (BuildContext context, AsyncSnapshot<File> file) {
                   return Image.file(file.requireData);
                 })),
-        Text(episode.title),
+        Text(controller.player.episode.title),
         OutlinedButton(
           onPressed: () {
-            playPause = controller.player.startStop() ? "Play" : "Pause";
+            playButtonPress();
           },
-          child: Text(playPause),
+          child: Icon(controller.player.isPlaying() ? Icons.pause : Icons.play_arrow),
         ),
         Text(controller.player.progress()),
         TextField(

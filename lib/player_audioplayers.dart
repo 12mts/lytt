@@ -38,5 +38,4 @@ class PlayerAudio implements Player {
     _player.resume();
     return true;
   }
-
 }

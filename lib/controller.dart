@@ -76,4 +76,22 @@ class PlayerController {
     _player.setTime(parse);
   }
 
+  bool isPlaying() {
+    return _player.isPlaying();
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is PlayerController
+        && other.episode == episode;
+  }
+
+  @override
+  int get hashCode => episode.hashCode;
 }
