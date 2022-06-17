@@ -9,12 +9,12 @@ typedef DownloadEpisode = Function(Episode episode);
 typedef PlayEpisode = Function(Episode episode);
 
 class EpisodeListWidget extends StatelessWidget {
-  EpisodeListWidget({
-    required this.podcast,
-    required this.controller,
-    required this.downloadEpisode,
-    required this.playEpisode
-  }) : super(key: ObjectKey(controller));
+  EpisodeListWidget(
+      {required this.podcast,
+      required this.controller,
+      required this.downloadEpisode,
+      required this.playEpisode})
+      : super(key: ObjectKey(controller));
 
   final Podcast podcast;
   final Controller controller;
@@ -34,14 +34,17 @@ class EpisodeListWidget extends StatelessWidget {
       list.add(Card(
         child: Row(
           children: [
-            Text(episode.title),
-            IconButton(onPressed: () {
-              playEpisode(episode);
-            },
+            IconButton(
+                onPressed: () {
+                  playEpisode(episode);
+                },
                 icon: const Icon(Icons.play_arrow)),
-            IconButton(onPressed: () {
-              downloadEpisode(episode);
-            }, icon: const Icon(Icons.file_download))
+            Text(episode.title),
+            IconButton(
+                onPressed: () {
+                  downloadEpisode(episode);
+                },
+                icon: const Icon(Icons.file_download))
           ],
         ),
       ));
