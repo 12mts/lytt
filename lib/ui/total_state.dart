@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lytt/ui/episode_route.dart';
 import 'package:lytt/ui/player_route.dart';
 import 'package:lytt/ui/podcast_route.dart';
 
 import '../controller.dart';
+import '../podcast/podcast.dart';
 
 class LyttApp extends StatefulWidget {
   const LyttApp({Key? key, required this.title}) : super(key: key);
@@ -22,6 +24,26 @@ class _LyttApp extends State<LyttApp> {
     });
   }
 
+  void _selectPodcast(Podcast podcast) {
+    setState(() {
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>
+          EpisodeRoute.selectionEpisodes(controller, podcast)));
+    });
+  }
+
+  void _addPodcast(url) {
+    setState(() {
+      controller.addPodcast(url);
+    });
+  }
+
+  void _addPodcastRoute() {
+    setState(() {
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>
+          AddPodcastWidget(controller: controller, addPodcast: _addPodcast)));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +56,9 @@ class _LyttApp extends State<LyttApp> {
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) =>
-                      PodcastRoute.selectionPodcast(context, controller)));
+                      PodcastWidget(controller: controller,
+                          selectPodcast: _selectPodcast,
+                          addPodcast: _addPodcastRoute)));
             })
       ]),
       body: PlayerWidget(controller: controller,

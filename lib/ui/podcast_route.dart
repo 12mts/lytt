@@ -1,47 +1,65 @@
-
 import 'package:flutter/material.dart';
 
 import '../controller.dart';
 import '../podcast/podcast.dart';
-import 'episode_route.dart';
 
-class PodcastRoute {
-  /// The select podcasts and episodes
-  static Widget selectionPodcast(BuildContext context, Controller controller) {
+typedef SelectPodcast = Function(Podcast podcast);
+typedef AddPodcastRoute = Function();
+
+class PodcastWidget extends StatelessWidget {
+  PodcastWidget(
+      {required this.controller,
+      required this.selectPodcast,
+      required this.addPodcast})
+      : super(key: ObjectKey(controller));
+
+  final Controller controller;
+  final SelectPodcast selectPodcast;
+  final AddPodcastRoute addPodcast;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text("Podcasts"), actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => _newPodcastPage(controller)));
+                addPodcast();
               },
               icon: const Icon(Icons.add))
         ]),
         body: ListView(children: _podcastList(context, controller)));
   }
 
-  /// Takes a podcast and returns list of all episodes as widgets
-  static List<Widget> _podcastList(BuildContext context, Controller controller) {
+  List<Widget> _podcastList(BuildContext context, Controller controller) {
     List<Widget> list = [];
     for (Podcast p in controller.getPodcasts()) {
       list.add(ListTile(
         title: Text(p.title),
         onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) =>
-                    EpisodeRoute.selectionEpisodes(controller, p)));
+          selectPodcast(p);
         },
       ));
     }
     return list;
   }
+}
 
-  static Widget _newPodcastPage(Controller controller) {
+typedef AddPodcast = Function(String url);
+
+class AddPodcastWidget extends StatelessWidget {
+  AddPodcastWidget({required this.controller, required this.addPodcast})
+      : super(key: ObjectKey(controller));
+
+  final Controller controller;
+  final AddPodcast addPodcast;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text("New podcast")),
         body: Column(children: [
           TextField(onSubmitted: (url) {
-            controller.addPodcast(url);
+            addPodcast(url);
           }),
         ]));
   }
