@@ -39,23 +39,18 @@ class EpisodeListWidget extends StatelessWidget {
   List<Widget> episodeList(Controller controller, Podcast podcast) {
     List<Widget> list = [];
     for (Episode episode in podcast.episodes) {
-      list.add(Card(
-        child: Row(
-          children: [
-            IconButton(
-                onPressed: () {
-                  playEpisode(episode);
-                },
-                icon: const Icon(Icons.play_arrow)),
-            Text(episode.title),
-
-            IconButton(
-                onPressed: () {
-                  downloadEpisode(episode);
-                },
-                icon: const Icon(Icons.file_download))
-          ],
-        ),
+      list.add(ListTile(
+        leading: IconButton(
+            onPressed: () {
+              playEpisode(episode);
+            },
+            icon: const Icon(Icons.play_arrow)),
+        title: Text(episode.title),
+        trailing: IconButton(
+            onPressed: () {
+              downloadEpisode(episode);
+            },
+            icon: const Icon(Icons.file_download))
       ));
     }
     return list;
