@@ -1,3 +1,4 @@
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,18 @@ class EpisodeListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(podcast.title)),
-        body: ListView(children: episodeList(controller, podcast)));
+        body: Column(children: [
+          Row(children: [
+            FutureBuilder(
+                future: controller
+                    .imageFile(podcast.title),
+                builder: (BuildContext context, AsyncSnapshot<File> file) {
+                  return Image.file(file.requireData, height: 50);
+                }),
+            Text(podcast.title)
+          ]),
+          Expanded(child: ListView(children: episodeList(controller, podcast)))
+        ]));
   }
 
   List<Widget> episodeList(Controller controller, Podcast podcast) {
@@ -40,6 +52,7 @@ class EpisodeListWidget extends StatelessWidget {
                 },
                 icon: const Icon(Icons.play_arrow)),
             Text(episode.title),
+
             IconButton(
                 onPressed: () {
                   downloadEpisode(episode);
