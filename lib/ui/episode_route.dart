@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import '../controller.dart';
 import '../podcast/episode.dart';
 import '../podcast/podcast.dart';
+import 'image_widget.dart';
 
 typedef DownloadEpisode = Function(Episode episode);
 typedef PlayEpisode = Function(Episode episode);
@@ -28,12 +27,9 @@ class EpisodeListWidget extends StatelessWidget {
         appBar: AppBar(title: Text(podcast.title)),
         body: Column(children: [
           Row(children: [
-            FutureBuilder(
-                future: controller
-                    .imageFile(podcast.title),
-                builder: (BuildContext context, AsyncSnapshot<File> file) {
-                  return Image.file(file.requireData, height: 50);
-                }),
+            ImageWidget(
+                imageFile: controller.imageFile(podcast.title),
+                height: 60),
             Text(podcast.title)
           ]),
           Expanded(child: ListView(children: episodeList(controller, podcast)))

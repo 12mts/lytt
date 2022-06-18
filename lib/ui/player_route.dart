@@ -1,14 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lytt/controller.dart';
+import 'package:lytt/ui/image_widget.dart';
 
 typedef PlayButtonPress = Function();
 
 class PlayerWidget extends StatelessWidget {
-  PlayerWidget({required this.controller,
-  required this.playButtonPress})
+  PlayerWidget({required this.controller, required this.playButtonPress})
       : super(key: ObjectKey(controller));
 
   final Controller controller;
@@ -19,18 +17,16 @@ class PlayerWidget extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-            child: FutureBuilder(
-                future: controller
-                    .imageFile(controller.player.episode.podcastTitle),
-                builder: (BuildContext context, AsyncSnapshot<File> file) {
-                  return Image.file(file.requireData);
-                })),
+            child: ImageWidget(
+                imageFile: controller
+                    .imageFile(controller.player.episode.podcastTitle))),
         Text(controller.player.episode.title),
         OutlinedButton(
           onPressed: () {
             playButtonPress();
           },
-          child: Icon(controller.player.isPlaying() ? Icons.pause : Icons.play_arrow),
+          child: Icon(
+              controller.player.isPlaying() ? Icons.pause : Icons.play_arrow),
         ),
         Text(controller.player.progress()),
         TextField(
