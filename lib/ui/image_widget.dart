@@ -16,7 +16,10 @@ class ImageWidget extends StatelessWidget {
     return FutureBuilder(
         future: imageFile,
         builder: (BuildContext context, AsyncSnapshot<File> file) {
-          return Image.file(file.requireData, height: height,);
+          if(file.hasData) {
+            return Image.file(file.requireData, height: height,);
+          }
+          return const Text("???");
         });
   }
 }
