@@ -34,6 +34,7 @@ class _LyttApp extends State<LyttApp> {
   void _playEpisode(Episode episode) {
     setState(() {
       controller.playEpisode(episode);
+      Navigator.popUntil(context, (route) => route.isFirst);
     });
   }
 
