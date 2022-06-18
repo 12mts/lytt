@@ -1,35 +1,25 @@
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:lytt/player/player.dart';
 
-class PlayerAudio implements Player {
+class PlayerAudio {
   final _player = AudioPlayer();
 
   PlayerAudio(url) {
     _player.setSourceUrl(url);
   }
 
-  @override
   bool isPlaying() {
     return _player.state == PlayerState.playing;
   }
 
-  @override
-  String progress() {
-    return "---";
-  }
-
-  @override
   void setEpisode(Future<Uri> uri) async {
     _player.play(UrlSource((await uri).toString()));
   }
 
-  @override
-  void setTime(int time) async {
-    await _player.seek(Duration(seconds: time));
+  void setTime(Duration duration) async {
+    await _player.seek(duration);
   }
 
-  @override
   bool startStop() {
     if (isPlaying()) {
       _player.pause();
@@ -39,12 +29,10 @@ class PlayerAudio implements Player {
     return true;
   }
 
-  @override
   Stream<Duration> durationStream() {
     return _player.onDurationChanged;
   }
 
-  @override
   Stream<Duration> positionStream() {
     return _player.onPositionChanged;
   }

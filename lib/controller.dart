@@ -75,12 +75,8 @@ class PlayerController {
     return _player.durationStream();
   }
 
-  String progress() {
-    return _player.progress();
-  }
-
-  void setTime(int parse) {
-    _player.setTime(parse);
+  void setTime(Duration duration) {
+    _player.setTime(duration);
   }
 
   bool isPlaying() {

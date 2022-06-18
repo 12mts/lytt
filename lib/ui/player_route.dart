@@ -1,5 +1,5 @@
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:lytt/controller.dart';
 import 'package:lytt/ui/image_widget.dart';
 
@@ -31,19 +31,14 @@ class PlayerWidget extends StatelessWidget {
         StreamBuilder(
             stream: controller.player.positionStream(),
             builder: (BuildContext context, AsyncSnapshot<Duration> time) {
-              if(time.hasData) {
-                return Text(time.requireData.toString());
-              }
-              return const Text("-");
+              return ProgressBar(
+                progress: time.data ?? const Duration(seconds: 0),
+                total: const Duration(hours: 1),
+                onSeek: (duration) {
+                  controller.player.setTime(duration);
+                },
+              );
             }),
-        TextField(
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-          ],
-          onSubmitted: (time) {
-            controller.player.setTime(int.parse(time));
-          },
-        )
       ],
     );
   }
