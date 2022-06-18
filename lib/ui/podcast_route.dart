@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lytt/ui/image_widget.dart';
 
 import '../controller.dart';
 import '../podcast/podcast.dart';
@@ -38,6 +39,7 @@ class PodcastListWidget extends StatelessWidget {
     List<Widget> list = [];
     for (Podcast p in controller.getPodcasts()) {
       list.add(ListTile(
+        leading: ImageWidget(imageFile: controller.imageFile(p.title)),
         title: Text(p.title),
         onTap: () {
           selectPodcast(p);
