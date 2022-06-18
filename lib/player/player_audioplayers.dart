@@ -1,6 +1,6 @@
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:lytt/player.dart';
+import 'package:lytt/player/player.dart';
 
 class PlayerAudio implements Player {
   final _player = AudioPlayer();
@@ -37,5 +37,15 @@ class PlayerAudio implements Player {
     }
     _player.resume();
     return true;
+  }
+
+  @override
+  Stream<Duration> durationStream() {
+    return _player.onDurationChanged;
+  }
+
+  @override
+  Stream<Duration> positionStream() {
+    return _player.onPositionChanged;
   }
 }

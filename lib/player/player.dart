@@ -25,6 +25,14 @@ class Player {
     return isPlaying();
   }
 
+  Stream<Duration> positionStream() {
+    return _player.positionStream;
+  }
+
+  Stream<Duration?> durationStream() {
+    return _player.durationStream;
+  }
+
   String progress() {
     return '${(_player.position).toString()}'
         '/${(_player.duration).toString()}';

@@ -28,7 +28,14 @@ class PlayerWidget extends StatelessWidget {
           child: Icon(
               controller.player.isPlaying() ? Icons.pause : Icons.play_arrow),
         ),
-        Text(controller.player.progress()),
+        StreamBuilder(
+            stream: controller.player.positionStream(),
+            builder: (BuildContext context, AsyncSnapshot<Duration> time) {
+              if(time.hasData) {
+                return Text(time.requireData.toString());
+              }
+              return const Text("-");
+            }),
         TextField(
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
