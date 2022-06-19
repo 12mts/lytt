@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -17,11 +16,9 @@ class Controller {
 
   Controller() {
     player = PlayerController(this);
-    _storage.readPodcastInfo().then(
-        (string) => {
-          _library.loadPodcasts(jsonDecode(string))
-        }
-    );
+    _storage
+        .readPodcastInfo()
+        .then((string) => {_library.loadPodcasts(jsonDecode(string))});
   }
 
   List<Podcast> getPodcasts() {
@@ -56,7 +53,8 @@ class PlayerController {
   final _storage = StorageHandler();
   Episode episode = Episode(
       "http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3",
-      "H.I. #3: Four Light Bulbs", "Hello Internet");
+      "H.I. #3: Four Light Bulbs",
+      "Hello Internet");
   late final Player _player;
 
   PlayerController(Controller controller) {
@@ -91,5 +89,4 @@ class PlayerController {
   bool isPlaying() {
     return _player.isPlaying();
   }
-
 }

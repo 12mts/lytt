@@ -7,8 +7,7 @@ import 'package:lytt/ui/image_widget.dart';
 typedef PlayButtonPress = Function();
 
 class PlayerWidget extends StatelessWidget {
-  PlayerWidget({required this.controller})
-      : super(key: ObjectKey(controller));
+  PlayerWidget({required this.controller}) : super(key: ObjectKey(controller));
 
   final Controller controller;
 

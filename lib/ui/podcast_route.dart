@@ -25,10 +25,11 @@ class PodcastListWidget extends StatelessWidget {
         appBar: AppBar(title: const Text("Podcasts"), actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => AddPodcastWidget(controller: controller,
-                      addPodcast: addPodcast)
-                ));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddPodcastWidget(
+                            controller: controller, addPodcast: addPodcast)));
               },
               icon: const Icon(Icons.add))
         ]),
@@ -50,7 +51,6 @@ class PodcastListWidget extends StatelessWidget {
   }
 }
 
-
 class AddPodcastWidget extends StatelessWidget {
   AddPodcastWidget({required this.controller, required this.addPodcast})
       : super(key: ObjectKey(controller));
@@ -65,15 +65,16 @@ class AddPodcastWidget extends StatelessWidget {
         appBar: AppBar(title: const Text("New podcast")),
         body: Column(children: [
           TextField(
-            controller: textEditingController,
-            decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: "RSS url"
-            ),
+              controller: textEditingController,
+              decoration: const InputDecoration(
+                  border: UnderlineInputBorder(), labelText: "RSS url"),
               onSubmitted: (url) {
-            addPodcast(url);
-          }),
-          OutlinedButton(onPressed: () {addPodcast(textEditingController.text);},
+                addPodcast(url);
+              }),
+          OutlinedButton(
+              onPressed: () {
+                addPodcast(textEditingController.text);
+              },
               child: const Text("Save"))
         ]));
   }

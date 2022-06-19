@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:webfeed/domain/rss_item.dart';
 
@@ -34,5 +33,4 @@ class Episode {
       _$EpisodeFromJson(json);
 
   Map<String, dynamic> toJson() => _$EpisodeToJson(this);
-
 }

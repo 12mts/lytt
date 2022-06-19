@@ -14,8 +14,7 @@ class PodcastLibrary {
 
   void loadPodcasts(Map<String, dynamic> json) {
     try {
-      podcasts = PodcastLibrary
-          .fromJson(json).podcasts;
+      podcasts = PodcastLibrary.fromJson(json).podcasts;
     } catch (e) {
       // ok
     }
@@ -32,6 +31,7 @@ class PodcastLibrary {
   }
 
   /// JSON methods
-  factory PodcastLibrary.fromJson(Map<String, dynamic> json) => _$PodcastLibraryFromJson(json);
+  factory PodcastLibrary.fromJson(Map<String, dynamic> json) =>
+      _$PodcastLibraryFromJson(json);
   Map<String, dynamic> toJson() => _$PodcastLibraryToJson(this);
 }

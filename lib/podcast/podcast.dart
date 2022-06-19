@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:webfeed/domain/rss_feed.dart';
 
@@ -29,13 +28,13 @@ class Podcast {
 
   List<Episode> episodes = [];
 
-  Podcast(this.title, this.link, this.image, this.counter,
-      this.description, this.owner, this.author);
+  Podcast(this.title, this.link, this.image, this.counter, this.description,
+      this.owner, this.author);
 
   Podcast.fromFeed(RssFeed feed) {
     title = feed.title!;
     link = feed.link!;
-    image = (feed.image?.url)??(feed.itunes!.image!.href!);
+    image = (feed.image?.url) ?? (feed.itunes!.image!.href!);
 
     description = feed.description ?? feed.itunes?.summary;
     owner = feed.itunes?.owner?.name;
@@ -52,6 +51,7 @@ class Podcast {
   }
 
   /// JSON methods
-  factory Podcast.fromJson(Map<String, dynamic> json) => _$PodcastFromJson(json);
+  factory Podcast.fromJson(Map<String, dynamic> json) =>
+      _$PodcastFromJson(json);
   Map<String, dynamic> toJson() => _$PodcastToJson(this);
 }

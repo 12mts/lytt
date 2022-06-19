@@ -3,9 +3,5 @@ import 'package:lytt/ui/total_state.dart';
 
 void main() {
   runApp(MaterialApp(
-    title: "lytt",
-    theme: ThemeData.dark(),
-    home: const LyttApp()
-  ));
+      title: "lytt", theme: ThemeData.dark(), home: const LyttApp()));
 }
-

@@ -33,10 +33,14 @@ class _LyttApp extends State<LyttApp> {
 
   void _selectPodcast(Podcast podcast) {
     setState(() {
-      Navigator.push(context, MaterialPageRoute(builder: (context) =>
-          EpisodeListWidget(podcast: podcast, controller: controller,
-              downloadEpisode: _downloadEpisode,
-              playEpisode: _playEpisode)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => EpisodeListWidget(
+                  podcast: podcast,
+                  controller: controller,
+                  downloadEpisode: _downloadEpisode,
+                  playEpisode: _playEpisode)));
     });
   }
 
@@ -57,9 +61,11 @@ class _LyttApp extends State<LyttApp> {
             // Changes the page to list of episodes when
             // clicking the menu button
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) =>
-                      PodcastListWidget(controller: controller,
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PodcastListWidget(
+                          controller: controller,
                           selectPodcast: _selectPodcast,
                           addPodcast: _addPodcast)));
             })

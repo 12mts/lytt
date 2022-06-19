@@ -3,10 +3,8 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 
 class ImageWidget extends StatelessWidget {
-  ImageWidget({
-    required this.imageFile,
-    this.height
-  }) : super(key: ObjectKey(imageFile));
+  ImageWidget({required this.imageFile, this.height})
+      : super(key: ObjectKey(imageFile));
 
   final Future<File> imageFile;
   final double? height;
@@ -16,8 +14,11 @@ class ImageWidget extends StatelessWidget {
     return FutureBuilder(
         future: imageFile,
         builder: (BuildContext context, AsyncSnapshot<File> file) {
-          if(file.hasData) {
-            return Image.file(file.requireData, height: height,);
+          if (file.hasData) {
+            return Image.file(
+              file.requireData,
+              height: height,
+            );
           }
           return const Text("???");
         });
