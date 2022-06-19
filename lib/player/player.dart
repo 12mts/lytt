@@ -2,10 +2,10 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:rxdart/rxdart.dart';
 
-class PlayerAudio {
+class Player {
   final _player = AudioPlayer();
 
-  PlayerAudio(url) {
+  Player(url) {
     _player.setSourceUrl(url);
   }
 

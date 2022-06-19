@@ -2,7 +2,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:lytt/player/player_audioplayers.dart';
+import 'package:lytt/player/player.dart';
 import 'package:lytt/podcast/episode.dart';
 import 'package:lytt/podcast/podcast.dart';
 import 'package:lytt/podcast/podcast_library.dart';
@@ -52,10 +52,10 @@ class PlayerController {
   Episode episode = Episode(
       "http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3",
       "H.I. #3: Four Light Bulbs", "Hello Internet");
-  late final PlayerAudio _player;
+  late final Player _player;
 
   PlayerController(Controller controller) {
-    _player = PlayerAudio(episode.url);
+    _player = Player(episode.url);
   }
 
   void playEpisode(Episode episode) {
