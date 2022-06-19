@@ -8,8 +8,7 @@ import '../podcast/episode.dart';
 import '../podcast/podcast.dart';
 
 class LyttApp extends StatefulWidget {
-  const LyttApp({Key? key, required this.title}) : super(key: key);
-  final String title;
+  const LyttApp({Key? key}) : super(key: key);
 
   @override
   State<LyttApp> createState() => _LyttApp();
@@ -48,15 +47,16 @@ class _LyttApp extends State<LyttApp> {
   }
 
   void _addPodcast(url) {
-    setState(() {
-      controller.addPodcast(url);
+    setState(() async {
+      Podcast podcast = await controller.addPodcast(url);
+      _selectPodcast(podcast);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title), actions: [
+      appBar: AppBar(title: const Text("Player"), actions: [
         IconButton(
             icon: const Icon(Icons.list),
 

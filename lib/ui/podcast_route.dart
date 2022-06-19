@@ -57,15 +57,24 @@ class AddPodcastWidget extends StatelessWidget {
 
   final Controller controller;
   final AddPodcast addPodcast;
+  final textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text("New podcast")),
         body: Column(children: [
-          TextField(onSubmitted: (url) {
+          TextField(
+            controller: textEditingController,
+            decoration: const InputDecoration(
+              border: UnderlineInputBorder(),
+              labelText: "RSS url"
+            ),
+              onSubmitted: (url) {
             addPodcast(url);
           }),
+          OutlinedButton(onPressed: () {addPodcast(textEditingController.text);},
+              child: const Text("Save"))
         ]));
   }
 }

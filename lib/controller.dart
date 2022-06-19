@@ -36,10 +36,11 @@ class Controller {
     player.playEpisode(episode);
   }
 
-  void addPodcast(String url) async {
+  Future<Podcast> addPodcast(String url) async {
     final podcast = await _library.addPodcast(_web.getAsString(url));
     _storage.downloadImage(podcast);
     _storage.writePodcastInfo(jsonEncode(_library));
+    return podcast;
   }
 
   Future<File> imageFile(String podcastTitle) {
