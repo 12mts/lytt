@@ -63,6 +63,10 @@ class StorageHandler {
     file.writeAsBytes(await WebHandler().getAsBytes(episode.url));
   }
 
+  Future<bool> isEpisodeDownloaded(Episode episode) async {
+    return await(await _localFileEpisode(episode)).exists();
+  }
+
   Future<Uri> episodeUri(Episode episode) async {
     var pos = await _localFileEpisode(episode);
     if (await(pos).exists()) {

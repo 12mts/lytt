@@ -45,6 +45,10 @@ class Controller {
   Future<File> imageFile(String podcastTitle) {
     return _storage.localFileImage(podcastTitle);
   }
+
+  Future<bool> isEpisodeDownloaded(Episode episode) {
+    return _storage.isEpisodeDownloaded(episode);
+  }
 }
 
 class PlayerController {
