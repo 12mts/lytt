@@ -18,12 +18,6 @@ class _LyttApp extends State<LyttApp> {
   // App state
   final controller = Controller();
 
-  void _playButtonCheck() {
-    setState(() {
-      controller.player.startStop();
-    });
-  }
-
   void _downloadEpisode(Episode episode) {
     setState(() {
       controller.downloadEpisode(episode);
@@ -70,8 +64,7 @@ class _LyttApp extends State<LyttApp> {
                           addPodcast: _addPodcast)));
             })
       ]),
-      body: PlayerWidget(controller: controller,
-        playButtonPress: _playButtonCheck,),
+      body: PlayerWidget(controller: controller),
     );
   }
 }

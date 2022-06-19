@@ -1,4 +1,3 @@
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -11,6 +10,12 @@ class Player {
 
   bool isPlaying() {
     return _player.state == PlayerState.playing;
+  }
+
+  Stream<bool> isPlayingStream() async* {
+    await for (PlayerState state in _player.onPlayerStateChanged) {
+      yield state == PlayerState.playing;
+    }
   }
 
   void setEpisode(Future<Uri> uri) async {
@@ -39,14 +44,22 @@ class Player {
   }
 
   Stream<PlayerDurationState> playerState() {
-    return Rx.combineLatest2(positionStream(), durationStream(),
-            (a, b) => PlayerDurationState(progress: a as Duration, total: b as Duration));
+    return Rx.combineLatest3(
+        positionStream(),
+        durationStream(),
+        isPlayingStream(),
+        (a, b, c) => PlayerDurationState(
+            progress: a as Duration,
+            total: b as Duration,
+            isPlaying: c as bool));
   }
 }
 
 class PlayerDurationState {
-  PlayerDurationState({required this.progress, required this.total});
+  PlayerDurationState(
+      {required this.progress, required this.total, required this.isPlaying});
 
   final Duration progress;
   final Duration total;
+  final bool isPlaying;
 }
