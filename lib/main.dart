@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:lytt/ui/total_state.dart';
 
 void main() {
-  runApp(const MaterialApp(
+  runApp(MaterialApp(
     title: "lytt",
-    home: LyttApp()
+    theme: ThemeData.dark(),
+    home: const LyttApp()
   ));
 }
 
