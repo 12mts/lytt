@@ -75,6 +75,10 @@ class PlayerController {
     return _player.durationStream();
   }
 
+  Stream<PlayerDurationState> playerState() {
+    return _player.playerState();
+  }
+
   void setTime(Duration duration) {
     _player.setTime(duration);
   }

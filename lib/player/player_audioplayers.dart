@@ -1,5 +1,6 @@
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:rxdart/rxdart.dart';
 
 class PlayerAudio {
   final _player = AudioPlayer();
@@ -36,4 +37,16 @@ class PlayerAudio {
   Stream<Duration> positionStream() {
     return _player.onPositionChanged;
   }
+
+  Stream<PlayerDurationState> playerState() {
+    return Rx.combineLatest2(positionStream(), durationStream(),
+            (a, b) => PlayerDurationState(progress: a as Duration, total: b as Duration));
+  }
+}
+
+class PlayerDurationState {
+  PlayerDurationState({required this.progress, required this.total});
+
+  final Duration progress;
+  final Duration total;
 }
