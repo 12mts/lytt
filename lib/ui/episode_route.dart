@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lytt/download_handler.dart';
 
 import '../controller.dart';
 import '../podcast/episode.dart';
@@ -12,13 +13,11 @@ class EpisodeListWidget extends StatelessWidget {
   EpisodeListWidget(
       {required this.podcast,
       required this.controller,
-      required this.downloadEpisode,
       required this.playEpisode})
       : super(key: ObjectKey(controller));
 
   final Podcast podcast;
   final Controller controller;
-  final DownloadEpisode downloadEpisode;
   final PlayEpisode playEpisode;
 
   @override
@@ -38,12 +37,26 @@ class EpisodeListWidget extends StatelessWidget {
   List<Widget> episodeList(Controller controller, Podcast podcast) {
     List<Widget> list = [];
     for (Episode episode in podcast.episodes) {
-      list.add(_episode(episode));
+      list.add(EpisodeListItemWidget(episode: episode,
+          playEpisode: playEpisode,));
     }
     return list;
   }
+}
 
-  Widget _episode(Episode episode) {
+class EpisodeListItemWidget extends StatelessWidget {
+  EpisodeListItemWidget(
+      {required this.episode, required this.playEpisode, Key? key})
+      : super(key: key) {
+    handler = DownloadHandler(episode);
+  }
+
+  final Episode episode;
+  late final DownloadHandler handler;
+  final PlayEpisode playEpisode;
+
+  @override
+  Widget build(BuildContext context) {
     return ListTile(
         leading: IconButton(
             onPressed: () {
@@ -51,20 +64,27 @@ class EpisodeListWidget extends StatelessWidget {
             },
             icon: const Icon(Icons.play_arrow)),
         title: Text(episode.title),
-        trailing: FutureBuilder(
-          future: controller.isEpisodeDownloaded(episode),
-          builder: (BuildContext context, AsyncSnapshot<bool> downloaded) {
+        trailing: StreamBuilder(
+          stream: handler.getDownloadState(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DownloadState> downloaded) {
             if (downloaded.hasData) {
-              if (!downloaded.requireData) {
+              final data = downloaded.requireData;
+              if (data == DownloadState.notDownloaded) {
                 return IconButton(
                     onPressed: () {
-                      downloadEpisode(episode);
+                      handler.download();
                     },
                     icon: const Icon(Icons.download));
+              } else if (data == DownloadState.isDownloading) {
+                return IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.downloading),
+                );
               } else {
                 return IconButton(
                     onPressed: () {
-                      downloadEpisode(episode);
+                      handler.download();
                     },
                     icon: const Icon(Icons.download_done));
               }

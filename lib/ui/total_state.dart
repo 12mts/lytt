@@ -18,12 +18,6 @@ class _LyttApp extends State<LyttApp> {
   // App state
   final controller = Controller();
 
-  void _downloadEpisode(Episode episode) {
-    setState(() {
-      controller.downloadEpisode(episode);
-    });
-  }
-
   void _playEpisode(Episode episode) {
     setState(() {
       controller.playEpisode(episode);
@@ -39,7 +33,6 @@ class _LyttApp extends State<LyttApp> {
               builder: (context) => EpisodeListWidget(
                   podcast: podcast,
                   controller: controller,
-                  downloadEpisode: _downloadEpisode,
                   playEpisode: _playEpisode)));
     });
   }
