@@ -12,10 +12,9 @@ class DownloadHandler {
   final Episode _episode;
   final StorageHandler _storageHandler = StorageHandler();
   DownloadState? _state;
-  late final StreamController<DownloadState> _controller;
+  late final StreamController<DownloadState> _controller = BehaviorSubject();
 
   void _createController() {
-    _controller =  BehaviorSubject();
     _checkState();
   }
 

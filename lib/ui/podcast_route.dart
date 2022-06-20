@@ -5,7 +5,6 @@ import '../controller.dart';
 import '../podcast/podcast.dart';
 
 typedef SelectPodcast = Function(Podcast podcast);
-//typedef AddPodcastRoute = Function();
 typedef AddPodcast = Function(String url);
 
 class PodcastListWidget extends StatelessWidget {
@@ -33,17 +32,24 @@ class PodcastListWidget extends StatelessWidget {
               },
               icon: const Icon(Icons.add))
         ]),
-        body: ListView(children: _podcastList(context, controller)));
+        body: StreamBuilder(
+          stream: controller.getPodcasts(),
+          builder: (context, AsyncSnapshot<List<Podcast>> podcasts) {
+            return ListView(children: _podcastList(podcasts.requireData));
+          },
+        )
+
+        );
   }
 
-  List<Widget> _podcastList(BuildContext context, Controller controller) {
+  List<Widget> _podcastList(List<Podcast> podcastList) {
     List<Widget> list = [];
-    for (Podcast p in controller.getPodcasts()) {
+    for (Podcast podcast in podcastList) {
       list.add(ListTile(
-        leading: ImageWidget(imageFile: controller.imageFile(p.title)),
-        title: Text(p.title),
+        leading: ImageWidget(imageFile: controller.imageFile(podcast.title)),
+        title: Text(podcast.title),
         onTap: () {
-          selectPodcast(p);
+          selectPodcast(podcast);
         },
       ));
     }

@@ -8,11 +8,11 @@ part of 'podcast_library.dart';
 
 PodcastLibrary _$PodcastLibraryFromJson(Map<String, dynamic> json) =>
     PodcastLibrary()
-      ..podcasts = (json['podcasts'] as List<dynamic>)
+      .._podcasts = (json['podcasts'] as List<dynamic>)
           .map((e) => Podcast.fromJson(e as Map<String, dynamic>))
           .toList();
 
 Map<String, dynamic> _$PodcastLibraryToJson(PodcastLibrary instance) =>
     <String, dynamic>{
-      'podcasts': instance.podcasts,
+      'podcasts': instance._podcasts,
     };

@@ -10,19 +10,19 @@ import 'io_manager.dart';
 
 class Controller {
   final _storage = StorageHandler();
-  final _library = PodcastLibrary();
+  late final PodcastLibrary _library;
   final _web = WebHandler();
   late final PlayerController player;
 
   Controller() {
-    player = PlayerController(this);
     _storage
         .readPodcastInfo()
-        .then((string) => {_library.loadPodcasts(jsonDecode(string))});
+        .then((string) => {_library = PodcastLibrary.fromJson(jsonDecode(string))});
+    player = PlayerController(this);
   }
 
-  List<Podcast> getPodcasts() {
-    return _library.podcasts;
+  Stream<List<Podcast>> getPodcasts() {
+    return _library.getPodcastStream();
   }
 
   void playEpisode(Episode episode) {
