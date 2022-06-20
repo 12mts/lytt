@@ -14,7 +14,9 @@ class PodcastLibrary {
   List<Podcast> _podcasts = [];
   StreamController<List<Podcast>> controller = BehaviorSubject();
 
-  PodcastLibrary();
+  PodcastLibrary() {
+    controller.add(_podcasts);
+  }
 
   PodcastLibrary.fromJson(Map<String, dynamic> json) {
     _podcasts = (json['podcasts'] as List<dynamic>)

@@ -10,14 +10,17 @@ import 'io_manager.dart';
 
 class Controller {
   final _storage = StorageHandler();
-  late final PodcastLibrary _library;
+  PodcastLibrary _library = PodcastLibrary();
   final _web = WebHandler();
   late final PlayerController player;
 
   Controller() {
-    _storage
-        .readPodcastInfo()
-        .then((string) => {_library = PodcastLibrary.fromJson(jsonDecode(string))});
+      _storage
+          .readPodcastInfo()
+          .then((string) =>
+      {
+        _library = PodcastLibrary.fromJson(jsonDecode(string))
+      });
     player = PlayerController(this);
   }
 
@@ -39,7 +42,6 @@ class Controller {
   Future<File> imageFile(String podcastTitle) {
     return _storage.localFileImage(podcastTitle);
   }
-
 }
 
 class PlayerController {

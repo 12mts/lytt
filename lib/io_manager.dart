@@ -80,13 +80,25 @@ class StorageHandler {
     return Uri.parse(episode.url);
   }
 
-  Future<File> localFileImage(String podcastTitle) async {
+  Future<File> _localFileImage(String podcastTitle) async {
     final path = await _localDirectoryPodcast(podcastTitle);
     return File('$path\\image.png');
   }
 
+  Future<File> localFileImage(String podcastTitle) async {
+    final file = await _localFileImage(podcastTitle);
+
+    // Busy waiting (not optimal)
+    while (true) {
+      if (await file.exists()) {
+        return file;
+      }
+      Future.delayed(const Duration(milliseconds: 1));
+    }
+  }
+
   void downloadImage(Podcast podcast) async {
-    final file = await localFileImage(podcast.title);
+    final file = await _localFileImage(podcast.title);
     file.writeAsBytes(await WebHandler().getAsBytes(podcast.image));
   }
 }
