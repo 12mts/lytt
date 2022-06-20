@@ -81,10 +81,10 @@ class EpisodeListItemWidget extends StatelessWidget {
                   onPressed: () {},
                   icon: const Icon(Icons.downloading),
                 );
-              } else {
+              } else if (data == DownloadState.downloaded) {
                 return IconButton(
                     onPressed: () {
-                      handler.download();
+                      handler.delete();
                     },
                     icon: const Icon(Icons.download_done));
               }

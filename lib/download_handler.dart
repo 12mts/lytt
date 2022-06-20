@@ -38,6 +38,12 @@ class DownloadHandler {
     );
   }
 
+  void delete() {
+    storageHandler.removeEpisode(episode).then(
+            (value) => _checkState()
+    );
+  }
+
   Stream<DownloadState> getDownloadState() async* {
     yield* controller.stream;
   }
