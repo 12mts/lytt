@@ -25,10 +25,6 @@ class Controller {
     return _library.podcasts;
   }
 
-  void downloadEpisode(Episode episode) {
-    _storage.downloadEpisode(episode);
-  }
-
   void playEpisode(Episode episode) {
     player.playEpisode(episode);
   }
@@ -44,9 +40,6 @@ class Controller {
     return _storage.localFileImage(podcastTitle);
   }
 
-  Future<bool> isEpisodeDownloaded(Episode episode) {
-    return _storage.isEpisodeDownloaded(episode);
-  }
 }
 
 class PlayerController {
@@ -70,23 +63,11 @@ class PlayerController {
     return _player.startStop();
   }
 
-  Stream<Duration> positionStream() {
-    return _player.positionStream();
-  }
-
-  Stream<Duration> durationStream() {
-    return _player.durationStream();
-  }
-
   Stream<PlayerDurationState> playerState() {
     return _player.playerState();
   }
 
   void setTime(Duration duration) {
     _player.setTime(duration);
-  }
-
-  bool isPlaying() {
-    return _player.isPlaying();
   }
 }

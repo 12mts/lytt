@@ -30,7 +30,7 @@ class PlayerWidget extends StatelessWidget {
                   onPressed: () {
                     controller.player.startStop();
                   },
-                  child: Icon(controller.player.isPlaying()
+                  child: Icon((state?.isPlaying ?? false)
                       ? Icons.pause
                       : Icons.play_arrow),
                 ),

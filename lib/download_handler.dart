@@ -5,47 +5,47 @@ import 'package:lytt/podcast/episode.dart';
 import 'package:rxdart/rxdart.dart';
 
 class DownloadHandler {
-  DownloadHandler(this.episode) {
+  DownloadHandler(this._episode) {
     _createController();
   }
 
-  final Episode episode;
-  final StorageHandler storageHandler = StorageHandler();
-  DownloadState? state;
-  late final StreamController<DownloadState> controller;
+  final Episode _episode;
+  final StorageHandler _storageHandler = StorageHandler();
+  DownloadState? _state;
+  late final StreamController<DownloadState> _controller;
 
   void _createController() {
-    controller =  BehaviorSubject();
+    _controller =  BehaviorSubject();
     _checkState();
   }
 
   void _checkState() async {
-    state = (await storageHandler.isEpisodeDownloaded(episode)
+    _state = (await _storageHandler.isEpisodeDownloaded(_episode)
         ? DownloadState.downloaded
         : DownloadState.notDownloaded);
-    _changeState(state!);
+    _changeState(_state!);
   }
 
   void _changeState(DownloadState newState) async {
-    state = newState;
-    controller.add(state!);
+    _state = newState;
+    _controller.add(_state!);
   }
 
   void download() {
     _changeState(DownloadState.isDownloading);
-    storageHandler.downloadEpisode(episode).then(
+    _storageHandler.downloadEpisode(_episode).then(
         (value) => _checkState()
     );
   }
 
   void delete() {
-    storageHandler.removeEpisode(episode).then(
+    _storageHandler.removeEpisode(_episode).then(
             (value) => _checkState()
     );
   }
 
   Stream<DownloadState> getDownloadState() async* {
-    yield* controller.stream;
+    yield* _controller.stream;
   }
 }
 
