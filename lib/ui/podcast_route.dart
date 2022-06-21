@@ -35,7 +35,10 @@ class PodcastListWidget extends StatelessWidget {
         body: StreamBuilder(
           stream: controller.getPodcasts(),
           builder: (context, AsyncSnapshot<List<Podcast>> podcasts) {
-            return ListView(children: _podcastList(podcasts.requireData));
+            if(podcasts.hasData) {
+              return ListView(children: _podcastList(podcasts.requireData));
+            }
+            return ListView();
           },
         )
 

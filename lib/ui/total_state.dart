@@ -38,10 +38,7 @@ class _LyttApp extends State<LyttApp> {
   }
 
   void _addPodcast(url) {
-    setState(() async {
-      await controller.addPodcast(url);
-      Navigator.pop;
-    });
+    controller.addPodcast(url);
   }
 
   @override
