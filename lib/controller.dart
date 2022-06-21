@@ -15,12 +15,12 @@ class Controller {
   late final PlayerController player;
 
   Controller() {
-      _storage
-          .readPodcastInfo()
-          .then((string) =>
-      {
-        _library = PodcastLibrary.fromJson(jsonDecode(string))
-      });
+      _storage.readPodcastInfo().then(
+          (string) => {
+            if (string != null) {
+              _library = PodcastLibrary.fromJson(jsonDecode(string))
+            }
+          });
     player = PlayerController(this);
   }
 

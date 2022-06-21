@@ -20,15 +20,15 @@ class ImageWidget extends StatelessWidget {
               height: height,
             );
           }
-          return AspectRatio(
-              aspectRatio: 1,
-              child: Container(
-                  height: height,
-                  color: Colors.black12,
-                  child: const FittedBox(
+          return Container(
+              height: height,
+              color: Colors.black12,
+              child: const AspectRatio(
+                  aspectRatio: 1,
+                  child: FittedBox(
                     fit: BoxFit.fitWidth,
-                    child:
-                        Text(" ʕ•ᴥ•ʔ ", style: TextStyle(color: Colors.blueGrey)),
+                    child: Text(" ʕ•ᴥ•ʔ ",
+                        style: TextStyle(color: Colors.blueGrey)),
                   )));
         });
   }

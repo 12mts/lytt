@@ -28,7 +28,7 @@ class StorageHandler {
   }
 
   /// Read from PodcastLibrary storage
-  Future<String> readPodcastInfo() async {
+  Future<String?> readPodcastInfo() async {
     try {
       final file = await _localFilePodcastLibrary;
 
@@ -38,7 +38,7 @@ class StorageHandler {
       return contents;
     } catch (e) {
       // If encountering an error, return -
-      return "-";
+      return null;
     }
   }
 
