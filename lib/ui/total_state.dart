@@ -37,10 +37,6 @@ class _LyttApp extends State<LyttApp> {
     });
   }
 
-  void _addPodcast(url) {
-    controller.addPodcast(url);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,8 +52,7 @@ class _LyttApp extends State<LyttApp> {
                   MaterialPageRoute(
                       builder: (context) => PodcastListWidget(
                           controller: controller,
-                          selectPodcast: _selectPodcast,
-                          addPodcast: _addPodcast)));
+                          selectPodcast: _selectPodcast,)));
             })
       ]),
       body: PlayerWidget(controller: controller),

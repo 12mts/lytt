@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import '../controller.dart';
+import '../podcast/podcast.dart';
+
 class ImageWidget extends StatelessWidget {
   ImageWidget({required this.imageFile, this.height})
       : super(key: ObjectKey(imageFile));
@@ -32,4 +35,21 @@ class ImageWidget extends StatelessWidget {
                   )));
         });
   }
+}
+
+class PodcastInfoWidget extends StatelessWidget {
+  final Podcast podcast;
+  final controller = Controller();
+
+  PodcastInfoWidget({Key? key, required this.podcast}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      ImageWidget(
+          imageFile: controller.imageFile(podcast.title), height: 60),
+      Text(podcast.title)
+    ]);
+  }
+
 }

@@ -8,15 +8,13 @@ typedef SelectPodcast = Function(Podcast podcast);
 typedef AddPodcast = Function(String url);
 
 class PodcastListWidget extends StatelessWidget {
-  PodcastListWidget(
-      {required this.controller,
-      required this.selectPodcast,
-      required this.addPodcast})
-      : super(key: ObjectKey(controller));
+  PodcastListWidget({
+    required this.controller,
+    required this.selectPodcast,
+  }) : super(key: ObjectKey(controller));
 
   final Controller controller;
   final SelectPodcast selectPodcast;
-  final AddPodcast addPodcast;
 
   @override
   Widget build(BuildContext context) {
@@ -27,22 +25,20 @@ class PodcastListWidget extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AddPodcastWidget(
-                            controller: controller, addPodcast: addPodcast)));
+                        builder: (context) =>
+                            AddPodcastWidget(controller: controller)));
               },
               icon: const Icon(Icons.add))
         ]),
         body: StreamBuilder(
           stream: controller.getPodcasts(),
           builder: (context, AsyncSnapshot<List<Podcast>> podcasts) {
-            if(podcasts.hasData) {
+            if (podcasts.hasData) {
               return ListView(children: _podcastList(podcasts.requireData));
             }
             return ListView();
           },
-        )
-
-        );
+        ));
   }
 
   List<Widget> _podcastList(List<Podcast> podcastList) {
@@ -61,11 +57,11 @@ class PodcastListWidget extends StatelessWidget {
 }
 
 class AddPodcastWidget extends StatelessWidget {
-  AddPodcastWidget({required this.controller, required this.addPodcast})
-      : super(key: ObjectKey(controller));
+  AddPodcastWidget({
+    required this.controller,
+  }) : super(key: ObjectKey(controller));
 
   final Controller controller;
-  final AddPodcast addPodcast;
   final textEditingController = TextEditingController();
 
   @override
@@ -78,13 +74,36 @@ class AddPodcastWidget extends StatelessWidget {
               decoration: const InputDecoration(
                   border: UnderlineInputBorder(), labelText: "RSS url"),
               onSubmitted: (url) {
-                addPodcast(url);
+                controller.addPodcast(url);
               }),
-          OutlinedButton(
-              onPressed: () {
-                addPodcast(textEditingController.text);
-              },
-              child: const Text("Save"))
+          Row(children: [
+            Expanded(
+                child: OutlinedButton(
+                    onPressed: () {
+                      controller.addPodcast(textEditingController.text);
+                    },
+                    child: const Text("Save"))),
+            Expanded(
+                child: OutlinedButton(
+                    onPressed: () {
+                      final Future<Podcast> podcast =
+                          controller.podcastURL(textEditingController.text);
+                      podcastPreview(podcast, context);
+                    },
+                    child: const Text("Preview"))),
+          ])
         ]));
   }
+
+  void podcastPreview(Future<Podcast> podcast, BuildContext context) async {
+    Podcast pod = await podcast;
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return PodcastInfoWidget(podcast: pod);
+      }
+    );
+  }
 }
+
+

@@ -25,11 +25,7 @@ class EpisodeListWidget extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Text(podcast.title)),
         body: Column(children: [
-          Row(children: [
-            ImageWidget(
-                imageFile: controller.imageFile(podcast.title), height: 60),
-            Text(podcast.title)
-          ]),
+          PodcastInfoWidget(podcast: podcast),
           Expanded(child: ListView(children: episodeList(controller, podcast)))
         ]));
   }
