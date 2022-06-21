@@ -1,27 +1,25 @@
 import 'dart:async';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import 'package:lytt/podcast/podcast.dart';
 import 'package:rxdart/rxdart.dart';
 
-part 'podcast_library.g.dart';
-
 /// Library for managing podcasts
-@JsonSerializable()
 class PodcastLibrary {
-  List<Podcast> _podcasts = [];
+  final Map<String, Podcast> _podcastMap = {};
   StreamController<List<Podcast>> controller = BehaviorSubject();
 
   PodcastLibrary() {
-    controller.add(_podcasts);
+    _sendPodcastList();
   }
 
-  PodcastLibrary.fromJson(Map<String, dynamic> json) {
-    _podcasts = (json['podcasts'] as List<dynamic>)
-        .map((e) => Podcast.fromJson(e as Map<String, dynamic>))
-        .toList();
-    controller.add(_podcasts);
+  List<Podcast> _podcastList() {
+    final list = _podcastMap.values.toList();
+    list.sort((a,b) => a.title.compareTo(b.title));
+    return list;
+  }
+
+  void _sendPodcastList() {
+    controller.add(_podcastList());
   }
 
   Stream<List<Podcast>> getPodcastStream() async* {
@@ -29,11 +27,24 @@ class PodcastLibrary {
   }
 
   Future<Podcast> addPodcast(Podcast podcast) async {
-    _podcasts.add(podcast);
-    controller.add(_podcasts);
+    _podcastMap[podcast.title] = podcast;
+    _sendPodcastList();
     return podcast;
   }
 
   /// JSON methods
-  Map<String, dynamic> toJson() => _$PodcastLibraryToJson(this);
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{
+        'podcasts': _podcastList(),
+      };
+
+  PodcastLibrary.fromJson(Map<String, dynamic> json) {
+    final list = (json['podcasts'] as List<dynamic>)
+        .map((e) => Podcast.fromJson(e as Map<String, dynamic>))
+        .toList();
+    for (Podcast p in list) {
+      _podcastMap[p.title] = p;
+    }
+    _sendPodcastList();
+  }
 }
