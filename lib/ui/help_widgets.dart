@@ -45,11 +45,17 @@ class PodcastInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      ImageWidget(
-          imageFile: controller.imageFile(podcast.title), height: 60),
-      Text(podcast.title)
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      ImageWidget(imageFile: controller.imageFile(podcast.title), height: 60),
+      Expanded(
+          child: SizedBox(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+            Text(podcast.title,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(podcast.description ?? ""),
+          ]))),
     ]);
   }
-
 }
