@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lytt/ui/image_widget.dart';
+import 'package:lytt/ui/help_widgets.dart';
 
 import '../controller.dart';
 import '../podcast/podcast.dart';

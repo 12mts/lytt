@@ -4,7 +4,7 @@ import 'package:lytt/download_handler.dart';
 import '../controller.dart';
 import '../podcast/episode.dart';
 import '../podcast/podcast.dart';
-import 'image_widget.dart';
+import 'help_widgets.dart';
 
 typedef DownloadEpisode = Function(Episode episode);
 typedef PlayEpisode = Function(Episode episode);
