@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 class ImageWidget extends StatelessWidget {
   ImageWidget({required this.imageFile, this.height})
@@ -20,7 +20,16 @@ class ImageWidget extends StatelessWidget {
               height: height,
             );
           }
-          return const Text("???");
+          return AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                  height: height,
+                  color: Colors.black12,
+                  child: const FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child:
+                        Text(" ʕ•ᴥ•ʔ ", style: TextStyle(color: Colors.blueGrey)),
+                  )));
         });
   }
 }
