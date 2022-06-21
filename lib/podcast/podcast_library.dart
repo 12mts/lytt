@@ -4,7 +4,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'package:lytt/podcast/podcast.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:webfeed/webfeed.dart';
 
 part 'podcast_library.g.dart';
 
@@ -29,8 +28,7 @@ class PodcastLibrary {
     yield* controller.stream;
   }
 
-  Future<Podcast> addPodcast(Future<String> rss) async {
-    final podcast = Podcast.fromFeed(RssFeed.parse(await rss));
+  Future<Podcast> addPodcast(Podcast podcast) async {
     _podcasts.add(podcast);
     controller.add(_podcasts);
     return podcast;

@@ -5,6 +5,7 @@ import 'package:lytt/player/player.dart';
 import 'package:lytt/podcast/episode.dart';
 import 'package:lytt/podcast/podcast.dart';
 import 'package:lytt/podcast/podcast_library.dart';
+import 'package:webfeed/domain/rss_feed.dart';
 
 import 'io_manager.dart';
 
@@ -33,11 +34,12 @@ class Controller {
   }
 
   Future<Podcast> podcastURL(String url) async {
-    return await _library.addPodcast(_web.getAsString(url));
+    return Podcast.fromFeed(RssFeed.parse(await _web.getAsString(url)));
   }
 
   Future<Podcast> addPodcast(String url) async {
     final podcast = await podcastURL(url);
+    _library.addPodcast(podcast);
     _storage.downloadImage(podcast);
     _storage.writePodcastInfo(jsonEncode(_library));
     return podcast;
