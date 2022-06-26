@@ -75,12 +75,14 @@ class AddPodcastWidget extends StatelessWidget {
                   border: UnderlineInputBorder(), labelText: "RSS url"),
               onSubmitted: (url) {
                 controller.addPodcast(url);
+                textEditingController.clear();
               }),
           Row(children: [
             Expanded(
                 child: OutlinedButton(
                     onPressed: () {
                       controller.addPodcast(textEditingController.text);
+                      textEditingController.clear();
                     },
                     child: const Text("Save"))),
             Expanded(
