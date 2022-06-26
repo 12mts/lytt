@@ -45,7 +45,7 @@ class PodcastListWidget extends StatelessWidget {
     List<Widget> list = [];
     for (Podcast podcast in podcastList) {
       list.add(ListTile(
-        leading: ImageWidget(imageFile: controller.imageFile(podcast.title)),
+        leading: ImageWidget(imageFile: controller.imageFilePodcast(podcast)),
         title: Text(podcast.title),
         onTap: () {
           selectPodcast(podcast);
