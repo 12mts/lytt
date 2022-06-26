@@ -85,16 +85,12 @@ class StorageHandler {
     return File('$path\\image.png');
   }
 
-  Future<File> localFileImage(String podcastTitle) async {
+  Future<File?> localFileImage(String podcastTitle) async {
     final file = await _localFileImage(podcastTitle);
-
-    // Busy waiting (not optimal)
-    while (true) {
-      if (await file.exists()) {
-        return file;
-      }
-      Future.delayed(const Duration(milliseconds: 1));
+    if (await file.exists()) {
+      return file;
     }
+    return null;
   }
 
   void downloadImage(Podcast podcast) async {

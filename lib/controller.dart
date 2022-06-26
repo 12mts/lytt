@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:lytt/player/player.dart';
 import 'package:lytt/podcast/episode.dart';
 import 'package:lytt/podcast/podcast.dart';
@@ -45,9 +45,22 @@ class Controller {
     return podcast;
   }
 
-  Future<File> imageFile(String podcastTitle) {
-    return _storage.localFileImage(podcastTitle);
+  Future<Image?> imageFile(String podcastTitle) async {
+    final file = await _storage.localFileImage(podcastTitle);
+    if (file != null) {
+      return Image.file(file);
+    }
+    return null;
   }
+
+  Future<Image> imageFilePodcast(Podcast podcast) async {
+    final image = await imageFile(podcast.title);
+    if (image != null) {
+      return image;
+    }
+    return Image.network(podcast.image);
+  }
+
 }
 
 class PlayerController {

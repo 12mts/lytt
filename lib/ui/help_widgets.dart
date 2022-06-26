@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -9,31 +8,34 @@ class ImageWidget extends StatelessWidget {
   ImageWidget({required this.imageFile, this.height})
       : super(key: ObjectKey(imageFile));
 
-  final Future<File> imageFile;
+  final Future<Image?> imageFile;
   final double? height;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: imageFile,
-        builder: (BuildContext context, AsyncSnapshot<File> file) {
+        builder: (BuildContext context, AsyncSnapshot<Image?> file) {
           if (file.hasData) {
-            return Image.file(
-              file.requireData,
+            return SizedBox(
               height: height,
-            );
+                child: file.data ?? noImageWidget());
           }
-          return Container(
-              height: height,
-              color: Colors.black12,
-              child: const AspectRatio(
-                  aspectRatio: 1,
-                  child: FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: Text(" ʕ•ᴥ•ʔ ",
-                        style: TextStyle(color: Colors.blueGrey)),
-                  )));
+          return noImageWidget();
         });
+  }
+
+  Widget noImageWidget() {
+    return Container(
+        height: height,
+        color: Colors.black12,
+        child: const AspectRatio(
+            aspectRatio: 1,
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(" ʕ•ᴥ•ʔ ",
+                  style: TextStyle(color: Colors.blueGrey)),
+            )));
   }
 }
 
@@ -46,7 +48,7 @@ class PodcastInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ImageWidget(imageFile: controller.imageFile(podcast.title), height: 60),
+      ImageWidget(imageFile: controller.imageFilePodcast(podcast), height: 60),
       Expanded(
           child: SizedBox(
               child: Column(
