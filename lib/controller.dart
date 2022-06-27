@@ -34,7 +34,7 @@ class Controller {
   }
 
   Future<Podcast> podcastURL(String url) async {
-    return Podcast.fromFeed(RssFeed.parse(await _web.getAsString(url)));
+    return Podcast.fromFeed(url, RssFeed.parse(await _web.getAsString(url)));
   }
 
   Future<Podcast> addPodcast(String url) async {
