@@ -7,7 +7,7 @@ part 'episode.g.dart';
 class Episode {
   late String url;
   late String title;
-  String podcastTitle;
+  String podcastId;
 
   String? description;
   bool? explicit;
@@ -15,9 +15,9 @@ class Episode {
   Duration? duration;
   DateTime? pubDate;
 
-  Episode(this.url, this.title, this.podcastTitle);
+  Episode(this.url, this.title, this.podcastId);
 
-  Episode.fromFeed(RssItem item, this.podcastTitle) {
+  Episode.fromFeed(RssItem item, this.podcastId) {
     url = item.enclosure!.url!;
     title = item.title!;
 
@@ -27,6 +27,8 @@ class Episode {
     duration = item.itunes?.duration;
     pubDate = item.pubDate;
   }
+  
+  String get id => (guid ?? url).hashCode.toRadixString(32);
 
   /// JSON methods
   factory Episode.fromJson(Map<String, dynamic> json) =>

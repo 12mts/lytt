@@ -27,7 +27,7 @@ class PodcastLibrary {
   }
 
   Future<Podcast> addPodcast(Podcast podcast) async {
-    _podcastMap[podcast.title] = podcast;
+    _podcastMap[podcast.id] = podcast;
     _sendPodcastList();
     return podcast;
   }

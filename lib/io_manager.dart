@@ -42,9 +42,9 @@ class StorageHandler {
     }
   }
 
-  Future<String> _localDirectoryPodcast(String podcastTitle) async {
+  Future<String> _localDirectoryPodcast(String podcastId) async {
     final path = await _localPath;
-    final directory = Directory("$path\\podcast\\$podcastTitle");
+    final directory = Directory("$path\\podcast\\$podcastId");
 
     if (!directory.existsSync()) {
       directory.createSync(recursive: true);
@@ -53,9 +53,8 @@ class StorageHandler {
   }
 
   Future<File> _localFileEpisode(Episode episode) async {
-    final path = await _localDirectoryPodcast(episode.podcastTitle);
-    return File('$path/${episode.title.hashCode.toRadixString(32)}'
-        '${episode.url.hashCode.toRadixString(32)}.mp3');
+    final path = await _localDirectoryPodcast(episode.podcastId);
+    return File('$path/${episode.id}.mp3');
   }
 
   Future<void> downloadEpisode(Episode episode) async {
@@ -80,13 +79,13 @@ class StorageHandler {
     return Uri.parse(episode.url);
   }
 
-  Future<File> _localFileImage(String podcastTitle) async {
-    final path = await _localDirectoryPodcast(podcastTitle);
+  Future<File> _localFileImage(String podcastId) async {
+    final path = await _localDirectoryPodcast(podcastId);
     return File('$path\\image.png');
   }
 
-  Future<File?> localFileImage(String podcastTitle) async {
-    final file = await _localFileImage(podcastTitle);
+  Future<File?> localFileImage(String podcastId) async {
+    final file = await _localFileImage(podcastId);
     if (await file.exists()) {
       return file;
     }
@@ -94,7 +93,7 @@ class StorageHandler {
   }
 
   void downloadImage(Podcast podcast) async {
-    final file = await _localFileImage(podcast.title);
+    final file = await _localFileImage(podcast.id);
     file.writeAsBytes(await WebHandler().getAsBytes(podcast.image));
   }
 }

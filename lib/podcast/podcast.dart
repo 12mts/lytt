@@ -42,7 +42,7 @@ class Podcast {
     lastBuildDate = feed.lastBuildDate;
 
     for (var ep in feed.items!) {
-      episodes.add(Episode.fromFeed(ep, title));
+      episodes.add(Episode.fromFeed(ep, id));
     }
   }
 
@@ -52,6 +52,8 @@ class Podcast {
     }
     //TODO
   }
+
+  String get id => (rssUrl.hashCode.toRadixString(32));
 
   /// JSON methods
   factory Podcast.fromJson(Map<String, dynamic> json) =>

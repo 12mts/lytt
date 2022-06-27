@@ -18,7 +18,7 @@ class PlayerWidget extends StatelessWidget {
         Expanded(
             child: ImageWidget(
                 imageFile: controller
-                    .imageFile(controller.player.episode.podcastTitle))),
+                    .imageFile(controller.player.episode.podcastId))),
         Text(controller.player.episode.title),
         StreamBuilder(
             stream: controller.player.playerState(),

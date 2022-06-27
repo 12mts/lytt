@@ -54,7 +54,7 @@ class Controller {
   }
 
   Future<Image> imageFilePodcast(Podcast podcast) async {
-    final image = await imageFile(podcast.title);
+    final image = await imageFile(podcast.id);
     if (image != null) {
       return image;
     }
@@ -68,7 +68,7 @@ class PlayerController {
   Episode episode = Episode(
       "http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3",
       "H.I. #3: Four Light Bulbs",
-      "Hello Internet");
+      "r77mft");
   late final Player _player;
 
   PlayerController(Controller controller) {
