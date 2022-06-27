@@ -1,5 +1,6 @@
 import 'package:webfeed/domain/rss_feed.dart';
 
+import '../controller.dart';
 import 'episode.dart';
 
 class Podcast {
@@ -54,11 +55,35 @@ class Podcast {
     return list;
   }
 
-  void updatePodcast(RssFeed feed) {
+  Future<bool> updatePodcast(RssFeed feed, Controller controller) async {
     if (feed.lastBuildDate == lastBuildDate && lastBuildDate != null) {
-      return;
+      return false;
     }
-    //TODO
+    if (feed.itunes?.newFeedUrl != null) {
+      //TODO Rename folder and stuff
+    }
+
+    title = feed.title!;
+    link = feed.link!;
+    image = (feed.image?.url) ?? (feed.itunes!.image!.href!);
+
+    description = feed.description ?? feed.itunes?.summary;
+    owner = feed.itunes?.owner?.name;
+    ownerEmail = feed.itunes?.owner?.email;
+    author = feed.author ?? feed.itunes?.author;
+
+    lastBuildDate = feed.lastBuildDate;
+
+    for (var ep in feed.items!) {
+      var episode = Episode.fromFeed(ep, id);
+
+      /// dose not update episodes at this point
+      if (!episodes.containsKey(episode.id)) {
+        episodes[episode.id] = episode;
+      }
+    }
+
+    return true;
   }
 
   String get id => (rssUrl.hashCode.toRadixString(32));

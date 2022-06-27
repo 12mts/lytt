@@ -16,12 +16,10 @@ class Controller {
   late final PlayerController player;
 
   Controller() {
-      _storage.readPodcastInfo().then(
-          (string) => {
-            if (string != null) {
-              _library = PodcastLibrary.fromJson(jsonDecode(string))
-            }
-          });
+    _storage.readPodcastInfo().then((string) => {
+          if (string != null)
+            {_library = PodcastLibrary.fromJson(jsonDecode(string))}
+        });
     player = PlayerController(this);
   }
 
@@ -61,6 +59,10 @@ class Controller {
     return Image.network(podcast.image);
   }
 
+  Future<bool> updatePodcast(Podcast podcast) async {
+    return podcast.updatePodcast(
+        RssFeed.parse(await _web.getAsString(podcast.rssUrl)), this);
+  }
 }
 
 class PlayerController {

@@ -23,7 +23,11 @@ class EpisodeListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(podcast.title)),
+        appBar: AppBar(title: Text(podcast.title),
+        actions: [
+          IconButton(onPressed: () => controller.updatePodcast(podcast),
+              icon: const Icon(Icons.replay))
+        ],),
         body: Column(children: [
           PodcastInfoWidget(podcast: podcast),
           Expanded(child: ListView(children: episodeList(controller, podcast)))
