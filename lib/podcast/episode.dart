@@ -1,6 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:webfeed/domain/rss_item.dart';
 
+import '../io_manager.dart';
+
 part 'episode.g.dart';
 
 @JsonSerializable()
@@ -29,6 +31,8 @@ class Episode {
   }
   
   String get id => (guid ?? url).hashCode.toRadixString(32);
+
+  String get filename => '$id.${StorageHandler.urlFileName(url)}';
 
   /// JSON methods
   factory Episode.fromJson(Map<String, dynamic> json) =>

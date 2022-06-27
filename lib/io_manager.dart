@@ -54,7 +54,7 @@ class StorageHandler {
 
   Future<File> _localFileEpisode(Episode episode) async {
     final path = await _localDirectoryPodcast(episode.podcastId);
-    return File('$path/${episode.id}.mp3');
+    return File('$path/${episode.filename}');
   }
 
   Future<void> downloadEpisode(Episode episode) async {
@@ -79,27 +79,40 @@ class StorageHandler {
     return Uri.parse(episode.url);
   }
 
-  Future<File> _localFileImage(String podcastId) async {
+  Future<Directory> _localFileImage(String podcastId) async {
     final path = await _localDirectoryPodcast(podcastId);
-    return File('$path\\image.png');
+    final directory = Directory('$path\\image');
+    if (!directory.existsSync()) {
+      directory.createSync(recursive: true);
+    }
+    return directory;
   }
 
   Future<File?> localFileImage(String podcastId) async {
-    final file = await _localFileImage(podcastId);
-    if (await file.exists()) {
-      return file;
+    final directory = await _localFileImage(podcastId);
+    if (directory.listSync().isEmpty) {
+      return null;
     }
-    return null;
+    return File(directory.listSync().first.path);
   }
 
   void downloadImage(Podcast podcast) async {
-    final file = await _localFileImage(podcast.id);
+    final directory = await _localFileImage(podcast.id);
+    if (directory.listSync().isNotEmpty) {
+      File(directory.listSync().first.path).delete();
+    }
+    final file = File('${directory.path}\\image.${urlFileName(podcast.image)}');
     file.writeAsBytes(await WebHandler().getAsBytes(podcast.image));
+  }
+
+  static String urlFileName(String url) {
+    return url.split('?').first.split('.').last;
   }
 }
 
 class WebHandler {
   final client = IOClient();
+
 
   Future<List<int>> getAsBytes(url) async {
     return (await client.get(Uri.parse(url))).bodyBytes;
