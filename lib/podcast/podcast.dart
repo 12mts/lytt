@@ -24,7 +24,7 @@ class Podcast {
   String? language;
    */
 
-  List<Episode> episodes = [];
+  Map<String, Episode> episodes = {};
 
   Podcast(this.title, this.link, this.image, this.rssUrl, this.description,
       this.owner, this.author, this.lastBuildDate);
@@ -42,12 +42,20 @@ class Podcast {
     lastBuildDate = feed.lastBuildDate;
 
     for (var ep in feed.items!) {
-      episodes.add(Episode.fromFeed(ep, id));
+      var episode = Episode.fromFeed(ep, id);
+      episodes[episode.id] = episode;
     }
   }
 
+  List<Episode> get episodeList {
+    final list = episodes.values.toList();
+    list.sort((a, b) =>
+        -(b.pubDate != null ? (a.pubDate?.compareTo(b.pubDate!) ?? 0) : 0));
+    return list;
+  }
+
   void updatePodcast(RssFeed feed) {
-    if (feed.lastBuildDate == lastBuildDate && lastBuildDate!=null) {
+    if (feed.lastBuildDate == lastBuildDate && lastBuildDate != null) {
       return;
     }
     //TODO
@@ -56,8 +64,7 @@ class Podcast {
   String get id => (rssUrl.hashCode.toRadixString(32));
 
   /// JSON methods
-  factory Podcast.fromJson(Map<String, dynamic> json) =>
-      Podcast(
+  factory Podcast.fromJson(Map<String, dynamic> json) => Podcast(
         json['title'] as String,
         json['link'] as String,
         json['image'] as String,
@@ -68,20 +75,22 @@ class Podcast {
         json['lastBuildDate'] as String?,
       )
         ..ownerEmail = json['ownerEmail'] as String?
-        ..episodes = (json['episodes'] as List<dynamic>)
-            .map((e) => Episode.fromJson(e as Map<String, dynamic>))
-            .toList();
+        ..episodes = {
+          for (var episode in (json['episodes'] as List<dynamic>)
+              .map((e) => Episode.fromJson(e as Map<String, dynamic>)))
+            episode.id: episode
+        };
 
   Map<String, dynamic> toJson() => (<String, dynamic>{
-    'title': title,
-    'link': link,
-    'image': image,
-    'rssUrl': rssUrl,
-    'description': description,
-    'owner': owner,
-    'ownerEmail': ownerEmail,
-    'author': author,
-    'episodes': episodes,
-    'lastBuildDate': lastBuildDate
-  });
+        'title': title,
+        'link': link,
+        'image': image,
+        'rssUrl': rssUrl,
+        'description': description,
+        'owner': owner,
+        'ownerEmail': ownerEmail,
+        'author': author,
+        'episodes': episodes.values.toList(),
+        'lastBuildDate': lastBuildDate
+      });
 }

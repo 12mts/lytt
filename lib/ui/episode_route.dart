@@ -32,7 +32,7 @@ class EpisodeListWidget extends StatelessWidget {
 
   List<Widget> episodeList(Controller controller, Podcast podcast) {
     List<Widget> list = [];
-    for (Episode episode in podcast.episodes) {
+    for (Episode episode in podcast.episodeList) {
       list.add(EpisodeListItemWidget(episode: episode,
           playEpisode: playEpisode,));
     }
