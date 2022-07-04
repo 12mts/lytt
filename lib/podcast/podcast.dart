@@ -1,11 +1,15 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:webfeed/domain/rss_feed.dart';
 
-import '../controller.dart';
 import 'episode.dart';
 
+part 'podcast.g.dart';
+
+@JsonSerializable()
 class Podcast {
   /// Must
-  final String rssUrl;
+  late String id;
+  String rssUrl;
   late String title;
   late String link;
   late String image;
@@ -28,9 +32,13 @@ class Podcast {
   Map<String, Episode> episodes = {};
 
   Podcast(this.title, this.link, this.image, this.rssUrl, this.description,
-      this.owner, this.author, this.lastBuildDate);
+      this.owner, this.author, this.lastBuildDate) {
+    id = rssUrl.hashCode.toRadixString(32);
+  }
 
   Podcast.fromFeed(this.rssUrl, RssFeed feed) {
+    id = rssUrl.hashCode.toRadixString(32);
+
     title = feed.title!;
     link = feed.link!;
     image = (feed.image?.url) ?? (feed.itunes!.image!.href!);
@@ -55,12 +63,12 @@ class Podcast {
     return list;
   }
 
-  Future<bool> updatePodcast(RssFeed feed, Controller controller) async {
+  Future<bool> updatePodcast(RssFeed feed) async {
     if (feed.lastBuildDate == lastBuildDate && lastBuildDate != null) {
       return false;
     }
     if (feed.itunes?.newFeedUrl != null) {
-      //TODO Rename folder and stuff
+      rssUrl = feed.itunes!.newFeedUrl!;
     }
 
     title = feed.title!;
@@ -86,36 +94,8 @@ class Podcast {
     return true;
   }
 
-  String get id => (rssUrl.hashCode.toRadixString(32));
-
   /// JSON methods
-  factory Podcast.fromJson(Map<String, dynamic> json) => Podcast(
-        json['title'] as String,
-        json['link'] as String,
-        json['image'] as String,
-        json['rssUrl'] as String,
-        json['description'] as String?,
-        json['owner'] as String?,
-        json['author'] as String?,
-        json['lastBuildDate'] as String?,
-      )
-        ..ownerEmail = json['ownerEmail'] as String?
-        ..episodes = {
-          for (var episode in (json['episodes'] as List<dynamic>)
-              .map((e) => Episode.fromJson(e as Map<String, dynamic>)))
-            episode.id: episode
-        };
-
-  Map<String, dynamic> toJson() => (<String, dynamic>{
-        'title': title,
-        'link': link,
-        'image': image,
-        'rssUrl': rssUrl,
-        'description': description,
-        'owner': owner,
-        'ownerEmail': ownerEmail,
-        'author': author,
-        'episodes': episodes.values.toList(),
-        'lastBuildDate': lastBuildDate
-      });
+  factory Podcast.fromJson(Map<String, dynamic> json) =>
+      _$PodcastFromJson(json);
+  Map<String, dynamic> toJson() => _$PodcastToJson(this);
 }

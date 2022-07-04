@@ -61,7 +61,7 @@ class Controller {
 
   Future<bool> updatePodcast(Podcast podcast) async {
     return podcast.updatePodcast(
-        RssFeed.parse(await _web.getAsString(podcast.rssUrl)), this);
+        RssFeed.parse(await _web.getAsString(podcast.rssUrl)));
   }
 }
 
