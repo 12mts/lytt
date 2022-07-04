@@ -17,8 +17,8 @@ class PlayerWidget extends StatelessWidget {
       children: [
         Expanded(
             child: ImageWidget(
-                imageFile: controller
-                    .imageFile(controller.player.episode.podcastId))),
+                imageFile:
+                    controller.imageFile(controller.player.episode.podcastId))),
         Text(controller.player.episode.title),
         StreamBuilder(
             stream: controller.player.playerState(),
@@ -27,6 +27,7 @@ class PlayerWidget extends StatelessWidget {
               final state = time.data;
               return Column(children: [
                 OutlinedButton(
+                  key: const Key("play_button"),
                   onPressed: () {
                     controller.player.startStop();
                   },
