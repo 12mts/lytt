@@ -1,41 +1,27 @@
 import 'dart:async';
 
 import 'package:lytt/podcast/podcast.dart';
-import 'package:rxdart/rxdart.dart';
 
-/// Library for managing podcasts
 class PodcastLibrary {
-  final Map<String, Podcast> _podcastMap = {};
-  StreamController<List<Podcast>> controller = BehaviorSubject();
+  final Map<String, Podcast> podcastMap = {};
 
-  PodcastLibrary() {
-    _sendPodcastList();
-  }
+  PodcastLibrary();
 
-  List<Podcast> _podcastList() {
-    final list = _podcastMap.values.toList();
+  List<Podcast> podcastList() {
+    final list = podcastMap.values.toList();
     list.sort((a,b) => a.title.compareTo(b.title));
     return list;
   }
 
-  void _sendPodcastList() {
-    controller.add(_podcastList());
-  }
-
-  Stream<List<Podcast>> getPodcastStream() async* {
-    yield* controller.stream;
-  }
-
   Future<Podcast> addPodcast(Podcast podcast) async {
-    _podcastMap[podcast.id] = podcast;
-    _sendPodcastList();
+    podcastMap[podcast.id] = podcast;
     return podcast;
   }
 
   /// JSON methods
   Map<String, dynamic> toJson() =>
       <String, dynamic>{
-        'podcasts': _podcastList(),
+        'podcasts': podcastList(),
       };
 
   PodcastLibrary.fromJson(Map<String, dynamic> json) {
@@ -43,8 +29,7 @@ class PodcastLibrary {
         .map((e) => Podcast.fromJson(e as Map<String, dynamic>))
         .toList();
     for (Podcast p in list) {
-      _podcastMap[p.title] = p;
+      podcastMap[p.id] = p;
     }
-    _sendPodcastList();
   }
 }

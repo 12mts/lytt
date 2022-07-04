@@ -3,22 +3,22 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:lytt/player/player.dart';
 import 'package:lytt/podcast/episode.dart';
+import 'package:lytt/podcast/library_manager.dart';
 import 'package:lytt/podcast/podcast.dart';
-import 'package:lytt/podcast/podcast_library.dart';
 import 'package:webfeed/domain/rss_feed.dart';
 
 import 'io_manager.dart';
 
 class Controller {
   final _storage = StorageHandler();
-  PodcastLibrary _library = PodcastLibrary();
+  PodcastManager _library = PodcastManager();
   final _web = WebHandler();
   late final PlayerController player;
 
   Controller() {
     _storage.readPodcastInfo().then((string) => {
           if (string != null)
-            {_library = PodcastLibrary.fromJson(jsonDecode(string))}
+            {_library = PodcastManager.fromJson(jsonDecode(string))}
         });
     player = PlayerController(this);
   }
@@ -39,7 +39,7 @@ class Controller {
     final podcast = await podcastURL(url);
     _library.addPodcast(podcast);
     _storage.downloadImage(podcast);
-    _storage.writePodcastInfo(jsonEncode(_library));
+    _storage.writePodcastInfo(jsonEncode(_library.lib));
     return podcast;
   }
 
