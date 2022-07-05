@@ -31,8 +31,15 @@ class Podcast {
 
   Map<String, Episode> episodes = {};
 
-  Podcast(this.title, this.link, this.image, this.rssUrl, this.description,
-      this.owner, this.author, this.lastBuildDate) {
+  Podcast(
+      {required this.title,
+      required this.link,
+      required this.image,
+      required this.rssUrl,
+      this.description,
+      this.owner,
+      this.author,
+      this.lastBuildDate}) {
     id = rssUrl.hashCode.toRadixString(32);
   }
 
@@ -97,5 +104,6 @@ class Podcast {
   /// JSON methods
   factory Podcast.fromJson(Map<String, dynamic> json) =>
       _$PodcastFromJson(json);
+
   Map<String, dynamic> toJson() => _$PodcastToJson(this);
 }

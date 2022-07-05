@@ -7,14 +7,14 @@ part of 'podcast.dart';
 // **************************************************************************
 
 Podcast _$PodcastFromJson(Map<String, dynamic> json) => Podcast(
-      json['title'] as String,
-      json['link'] as String,
-      json['image'] as String,
-      json['rssUrl'] as String,
-      json['description'] as String?,
-      json['owner'] as String?,
-      json['author'] as String?,
-      json['lastBuildDate'] as String?,
+      title: json['title'] as String,
+      link: json['link'] as String,
+      image: json['image'] as String,
+      rssUrl: json['rssUrl'] as String,
+      description: json['description'] as String?,
+      owner: json['owner'] as String?,
+      author: json['author'] as String?,
+      lastBuildDate: json['lastBuildDate'] as String?,
     )
       ..id = json['id'] as String
       ..ownerEmail = json['ownerEmail'] as String?
