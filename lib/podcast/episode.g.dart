@@ -11,6 +11,7 @@ Episode _$EpisodeFromJson(Map<String, dynamic> json) => Episode(
       json['title'] as String,
       json['podcastId'] as String,
     )
+      ..finished = json['finished'] as bool
       ..description = json['description'] as String?
       ..explicit = json['explicit'] as bool?
       ..guid = json['guid'] as String?
@@ -25,6 +26,7 @@ Map<String, dynamic> _$EpisodeToJson(Episode instance) => <String, dynamic>{
       'url': instance.url,
       'title': instance.title,
       'podcastId': instance.podcastId,
+      'finished': instance.finished,
       'description': instance.description,
       'explicit': instance.explicit,
       'guid': instance.guid,

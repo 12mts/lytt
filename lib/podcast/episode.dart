@@ -11,6 +11,8 @@ class Episode {
   late String title;
   String podcastId;
 
+  bool finished = false;
+
   String? description;
   bool? explicit;
   String? guid;

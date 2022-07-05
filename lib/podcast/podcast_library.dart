@@ -1,11 +1,17 @@
 import 'dart:async';
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:lytt/podcast/podcast.dart';
 
-class PodcastLibrary {
-  final Map<String, Podcast> podcastMap = {};
+part 'podcast_library.g.dart';
 
-  PodcastLibrary();
+@JsonSerializable()
+class PodcastLibrary {
+  late Map<String, Podcast> podcastMap;
+
+  PodcastLibrary() {
+    podcastMap = {};
+  }
 
   List<Podcast> podcastList() {
     final list = podcastMap.values.toList();
@@ -19,17 +25,7 @@ class PodcastLibrary {
   }
 
   /// JSON methods
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{
-        'podcasts': podcastList(),
-      };
-
-  PodcastLibrary.fromJson(Map<String, dynamic> json) {
-    final list = (json['podcasts'] as List<dynamic>)
-        .map((e) => Podcast.fromJson(e as Map<String, dynamic>))
-        .toList();
-    for (Podcast p in list) {
-      podcastMap[p.id] = p;
-    }
-  }
+  factory PodcastLibrary.fromJson(Map<String, dynamic> json) =>
+      _$PodcastLibraryFromJson(json);
+  Map<String, dynamic> toJson() => _$PodcastLibraryToJson(this);
 }
