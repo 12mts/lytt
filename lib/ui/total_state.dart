@@ -3,7 +3,7 @@ import 'package:lytt/ui/episode_route.dart';
 import 'package:lytt/ui/player_route.dart';
 import 'package:lytt/ui/podcast_route.dart';
 
-import '../controller.dart';
+import '../manager/controller.dart';
 import '../podcast/episode.dart';
 import '../podcast/podcast.dart';
 

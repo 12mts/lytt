@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lytt/ui/help_widgets.dart';
 
-import '../controller.dart';
+import '../manager/controller.dart';
 import '../podcast/podcast.dart';
 
 typedef SelectPodcast = Function(Podcast podcast);

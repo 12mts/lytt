@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:lytt/io_manager.dart';
+import 'package:lytt/manager/io_manager.dart';
 import 'package:lytt/podcast/episode.dart';
 import 'package:rxdart/rxdart.dart';
 

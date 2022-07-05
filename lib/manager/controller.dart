@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:lytt/player/player.dart';
 import 'package:lytt/podcast/episode.dart';
-import 'package:lytt/podcast/library_manager.dart';
+import 'package:lytt/manager/library_manager.dart';
 import 'package:lytt/podcast/podcast.dart';
 import 'package:webfeed/domain/rss_feed.dart';
 

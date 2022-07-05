@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../controller.dart';
+import '../manager/controller.dart';
 import '../podcast/podcast.dart';
 
 class ImageWidget extends StatelessWidget {

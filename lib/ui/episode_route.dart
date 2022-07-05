@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lytt/download_handler.dart';
+import 'package:lytt/manager/download_handler.dart';
 
-import '../controller.dart';
+import '../manager/controller.dart';
 import '../podcast/episode.dart';
 import '../podcast/podcast.dart';
 import 'help_widgets.dart';

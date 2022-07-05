@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:webfeed/domain/rss_item.dart';
 
-import '../io_manager.dart';
+import '../manager/io_manager.dart';
 
 part 'episode.g.dart';
 
