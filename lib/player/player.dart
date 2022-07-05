@@ -12,7 +12,7 @@ class Player {
     return _player.state == PlayerState.playing;
   }
 
-  Stream<bool> isPlayingStream() async* {
+  Stream<bool> _isPlayingStream() async* {
     await for (PlayerState state in _player.onPlayerStateChanged) {
       yield state == PlayerState.playing;
     }
@@ -35,19 +35,19 @@ class Player {
     return true;
   }
 
-  Stream<Duration> durationStream() {
+  Stream<Duration> _durationStream() {
     return _player.onDurationChanged;
   }
 
-  Stream<Duration> positionStream() {
+  Stream<Duration> _positionStream() {
     return _player.onPositionChanged;
   }
 
   Stream<PlayerDurationState> playerState() {
     return Rx.combineLatest3(
-        positionStream(),
-        durationStream(),
-        isPlayingStream(),
+        _positionStream(),
+        _durationStream(),
+        _isPlayingStream(),
         (a, b, c) => PlayerDurationState(
             progress: a as Duration,
             total: b as Duration,
