@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/io_client.dart';
@@ -119,6 +120,7 @@ class WebHandler {
   }
 
   Future<String> getAsString(url) async {
-    return (await client.get(Uri.parse(url))).body;
+    final bytes = (await client.get(Uri.parse(url))).bodyBytes;
+    return utf8.decode(bytes);
   }
 }

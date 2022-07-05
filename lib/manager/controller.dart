@@ -69,7 +69,7 @@ class PlayerController {
   final _storage = StorageHandler();
   Episode episode = Episode(
       "http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3",
-      "H.I. #3: Four Light Bulbs",
+      "H.I. #3: Four Light Bulbs, ÆØÅ",
       "r77mft");
   late final Player _player;
 
