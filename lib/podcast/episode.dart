@@ -1,14 +1,19 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:floor/floor.dart';
+import 'package:lytt/podcast/podcast.dart';
 import 'package:webfeed/domain/rss_item.dart';
 
 import '../manager/io_manager.dart';
 
-part 'episode.g.dart';
-
-@JsonSerializable()
+@Entity(
+    foreignKeys: [ForeignKey(
+        childColumns: ["podcastId"], parentColumns: ["id"], entity: Podcast)])
 class Episode {
+  @PrimaryKey()
+  late String id;
+
   late String url;
   late String title;
+
   String podcastId;
 
   bool finished = false;
@@ -16,10 +21,12 @@ class Episode {
   String? description;
   bool? explicit;
   String? guid;
-  Duration? duration;
-  DateTime? pubDate;
+  String? durationString;
+  String? pubDateString;
 
-  Episode(this.url, this.title, this.podcastId);
+  Episode(this.url, this.title, this.podcastId) {
+    id = (guid ?? url).hashCode.toRadixString(32);
+  }
 
   Episode.fromFeed(RssItem item, this.podcastId) {
     url = item.enclosure!.url!;
@@ -28,16 +35,11 @@ class Episode {
     description = item.description ?? item.itunes?.summary;
     explicit = item.itunes?.explicit;
     guid = item.guid;
-    duration = item.itunes?.duration;
-    pubDate = item.pubDate;
+    durationString = item.itunes?.duration.toString();
+    pubDateString = item.pubDate.toString();
+
+    id = (guid ?? url).hashCode.toRadixString(32);
   }
-  
-  String get id => (guid ?? url).hashCode.toRadixString(32);
 
   String get filename => '$id.${StorageHandler.urlFileName(url)}';
-
-  /// JSON methods
-  factory Episode.fromJson(Map<String, dynamic> json) =>
-      _$EpisodeFromJson(json);
-  Map<String, dynamic> toJson() => _$EpisodeToJson(this);
 }

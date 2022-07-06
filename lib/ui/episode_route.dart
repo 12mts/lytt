@@ -23,22 +23,38 @@ class EpisodeListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(podcast.title),
-        actions: [
-          IconButton(onPressed: () => controller.updatePodcast(podcast),
-              icon: const Icon(Icons.replay))
-        ],),
+        appBar: AppBar(
+          title: Text(podcast.title),
+          actions: [
+            IconButton(
+                onPressed: () => controller.updatePodcast(podcast),
+                icon: const Icon(Icons.replay))
+          ],
+        ),
         body: Column(children: [
           PodcastInfoWidget(podcast: podcast),
-          Expanded(child: ListView(children: episodeList(controller, podcast)))
+          Expanded(
+              child: StreamBuilder(
+                  stream: controller.episodeList(podcast),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Episode>> episodes) {
+                    if (episodes.hasData) {
+                      return ListView(
+                          children: episodeList(controller, episodes.data!));
+                    } else {
+                      return ListView();
+                    }
+                  }))
         ]));
   }
 
-  List<Widget> episodeList(Controller controller, Podcast podcast) {
+  List<Widget> episodeList(Controller controller, List<Episode> episodes) {
     List<Widget> list = [];
-    for (Episode episode in podcast.episodeList) {
-      list.add(EpisodeListItemWidget(episode: episode,
-          playEpisode: playEpisode,));
+    for (Episode episode in episodes) {
+      list.add(EpisodeListItemWidget(
+        episode: episode,
+        playEpisode: playEpisode,
+      ));
     }
     return list;
   }

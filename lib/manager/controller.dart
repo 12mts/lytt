@@ -1,30 +1,29 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:lytt/player/player.dart';
 import 'package:lytt/podcast/episode.dart';
-import 'package:lytt/manager/library_manager.dart';
 import 'package:lytt/podcast/podcast.dart';
 import 'package:webfeed/domain/rss_feed.dart';
 
+import '../DAO/database.dart';
+import '../DAO/podcast_dao.dart';
 import 'io_manager.dart';
 
 class Controller {
   final _storage = StorageHandler();
-  PodcastManager _library = PodcastManager();
+  late final PodcastDAO _podcastDAO;
   final _web = WebHandler();
   late final PlayerController player;
 
   Controller() {
-    _storage.readPodcastInfo().then((string) => {
-          if (string != null)
-            {_library = PodcastManager.fromJson(jsonDecode(string))}
-        });
+    $FloorPodcastDatabase.databaseBuilder('podcast.db').build().then((db) {
+      _podcastDAO = db.podcastDao;
+    });
     player = PlayerController(this);
   }
 
   Stream<List<Podcast>> getPodcasts() {
-    return _library.getPodcastStream();
+    return _podcastDAO.getPodcastStream();
   }
 
   void playEpisode(Episode episode) {
@@ -32,14 +31,18 @@ class Controller {
   }
 
   Future<Podcast> podcastURL(String url) async {
-    return Podcast.fromFeed(url, RssFeed.parse(await _web.getAsString(url)));
+    final feed = RssFeed.parse(await _web.getAsString(url));
+    return Podcast.fromFeed(url, feed);
   }
 
   Future<Podcast> addPodcast(String url) async {
-    final podcast = await podcastURL(url);
-    _library.addPodcast(podcast);
+    final feed = RssFeed.parse(await _web.getAsString(url));
+    final podcast = Podcast.fromFeed(url, feed);
+    _podcastDAO.addPodcast(podcast);
+    for (var ep in feed.items!) {
+      _podcastDAO.addEpisode(Episode.fromFeed(ep, podcast.id));
+    }
     _storage.downloadImage(podcast);
-    _storage.writePodcastInfo(jsonEncode(_library.lib));
     return podcast;
   }
 
@@ -60,8 +63,21 @@ class Controller {
   }
 
   Future<bool> updatePodcast(Podcast podcast) async {
-    return podcast.updatePodcast(
-        RssFeed.parse(await _web.getAsString(podcast.rssUrl)));
+    // TODO not done properly
+    final feed = RssFeed.parse(await _web.getAsString(podcast.rssUrl));
+    final newPodcast = Podcast.fromFeed(podcast.rssUrl, feed);
+    _podcastDAO.updatePodcast(newPodcast);
+    for (var ep in feed.items!) {
+      var episode = Episode.fromFeed(ep, podcast.id);
+      if (await _podcastDAO.episode(episode.id) == null) {
+        _podcastDAO.addEpisode(episode);
+      }
+    }
+    return true;
+  }
+
+  Stream<List<Episode>> episodeList(Podcast podcast) {
+    return _podcastDAO.getEpisodes(podcast.id);
   }
 }
 
