@@ -28,16 +28,15 @@ class Podcast {
    */
 
   Podcast(
-      {required this.title,
+      {required this.id,
+      required this.title,
       required this.link,
       required this.image,
       required this.rssUrl,
       this.description,
       this.owner,
       this.author,
-      this.lastBuildDate}) {
-    id = rssUrl.hashCode.toRadixString(32);
-  }
+      this.lastBuildDate});
 
   Podcast.fromFeed(this.rssUrl, RssFeed feed) {
     id = rssUrl.hashCode.toRadixString(32);

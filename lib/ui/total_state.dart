@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lytt/ui/episode_route.dart';
 import 'package:lytt/ui/player_route.dart';
+import 'package:lytt/ui/playlist_route.dart';
 import 'package:lytt/ui/podcast_route.dart';
 
 import '../manager/controller.dart';
@@ -42,7 +43,9 @@ class _LyttApp extends State<LyttApp> {
     return Scaffold(
       appBar: AppBar(title: const Text("Player"), actions: [
         IconButton(
-            icon: const Icon(Icons.list),
+            icon: const Icon(
+              Icons.grid_view_outlined,
+            ),
 
             // Changes the page to list of episodes when
             // clicking the menu button
@@ -51,9 +54,20 @@ class _LyttApp extends State<LyttApp> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => PodcastListWidget(
-                          controller: controller,
-                          selectPodcast: _selectPodcast,)));
-            })
+                            controller: controller,
+                            selectPodcast: _selectPodcast,
+                          )));
+            }),
+        IconButton(
+          icon: const Icon(Icons.list),
+          onPressed: () {
+            Navigator.push(context,
+              MaterialPageRoute(
+                  builder: (context) => PlaylistListWidget(controller)
+              )
+            );
+          },
+        )
       ]),
       body: PlayerWidget(controller: controller),
     );

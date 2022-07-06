@@ -1,7 +1,9 @@
-
 import 'package:flutter/material.dart';
+import 'package:lytt/DAO/playlist_dao.dart';
 import 'package:lytt/player/player.dart';
 import 'package:lytt/podcast/episode.dart';
+import 'package:lytt/podcast/playlist.dart';
+import 'package:lytt/podcast/playlistEntry.dart';
 import 'package:lytt/podcast/podcast.dart';
 import 'package:webfeed/domain/rss_feed.dart';
 
@@ -12,18 +14,20 @@ import 'io_manager.dart';
 class Controller {
   final _storage = StorageHandler();
   late final PodcastDAO _podcastDAO;
+  late final PlaylistDAO _playlistDAO;
   final _web = WebHandler();
   late final PlayerController player;
 
   Controller() {
     $FloorPodcastDatabase.databaseBuilder('podcast.db').build().then((db) {
       _podcastDAO = db.podcastDao;
+      _playlistDAO = db.playlistDao;
     });
     player = PlayerController(this);
   }
 
   Stream<List<Podcast>> getPodcasts() {
-    return _podcastDAO.getPodcastStream();
+    return _podcastDAO.getPodcasts();
   }
 
   void playEpisode(Episode episode) {
@@ -69,7 +73,7 @@ class Controller {
     _podcastDAO.updatePodcast(newPodcast);
     for (var ep in feed.items!) {
       var episode = Episode.fromFeed(ep, podcast.id);
-      if (await _podcastDAO.episode(episode.id) == null) {
+      if (!await _podcastDAO.episodeExists(episode)) {
         _podcastDAO.addEpisode(episode);
       }
     }
@@ -77,13 +81,34 @@ class Controller {
   }
 
   Stream<List<Episode>> episodeList(Podcast podcast) {
-    return _podcastDAO.getEpisodes(podcast.id);
+    return _podcastDAO.getEpisodes(podcast);
+  }
+
+  Stream<List<Playlist>> getPlaylists() {
+    return _playlistDAO.getPlaylists();
+  }
+
+  Stream<List<Episode>> getPlaylistEpisodes(Playlist playlist) {
+    return _playlistDAO.getPlaylist(playlist.id);
+  }
+
+  void addPlaylist(String text) {
+    _playlistDAO.addPlaylist(Playlist.name(text));
+  }
+
+  // Only for testing
+  void addRandom(Playlist playlist) async {
+    Episode? episode = await _podcastDAO.getRandomEpisode();
+    if (episode != null) {
+      _playlistDAO
+          .addPlaylistEntry(PlaylistEntry(episode.id, playlist.id, playlist.counter));
+    }
   }
 }
 
 class PlayerController {
   final _storage = StorageHandler();
-  Episode episode = Episode(
+  Episode episode = Episode.simple(
       "http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3",
       "H.I. #3: Four Light Bulbs, ÆØÅ",
       "r77mft");

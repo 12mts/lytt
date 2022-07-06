@@ -2,12 +2,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lytt/podcast/episode.dart';
 
 void main() {
-  final episode1 = Episode(
+  final episode1 = Episode.simple(
       "http://traffic.libsyn.com/hellointernet/136FinalFinal.mp3",
       "H.I. #136: Dog Bingo",
       "r77mft");
 
-  final episode2 = Episode(
+  final episode2 = Episode.simple(
       "http://traffic.libsyn.com/hellointernet/136FinalFinal.wav?hduisi=rska",
       "H.I. #136: Dog Bingo",
       "r77mft");

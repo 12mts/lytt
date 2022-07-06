@@ -63,6 +63,8 @@ class _$PodcastDatabase extends PodcastDatabase {
 
   PodcastDAO? _podcastDaoInstance;
 
+  PlaylistDAO? _playlistDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -84,7 +86,11 @@ class _$PodcastDatabase extends PodcastDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Podcast` (`id` TEXT NOT NULL, `rssUrl` TEXT NOT NULL, `title` TEXT NOT NULL, `link` TEXT NOT NULL, `image` TEXT NOT NULL, `description` TEXT, `owner` TEXT, `ownerEmail` TEXT, `author` TEXT, `lastBuildDate` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Episode` (`id` TEXT NOT NULL, `url` TEXT NOT NULL, `title` TEXT NOT NULL, `podcastId` TEXT NOT NULL, `finished` INTEGER NOT NULL, `description` TEXT, `explicit` INTEGER, `guid` TEXT, `durationString` TEXT, `pubDateString` TEXT, FOREIGN KEY (`podcastId`) REFERENCES `Podcast` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Episode` (`id` TEXT NOT NULL, `url` TEXT NOT NULL, `title` TEXT NOT NULL, `podcastId` TEXT NOT NULL, `description` TEXT, `explicit` INTEGER, `guid` TEXT, `durationString` TEXT, `pubDateString` TEXT, FOREIGN KEY (`podcastId`) REFERENCES `Podcast` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Playlist` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `counter` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `PlaylistEntry` (`episodeId` TEXT NOT NULL, `playlistId` TEXT NOT NULL, `rank` INTEGER NOT NULL, FOREIGN KEY (`episodeId`) REFERENCES `Episode` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`playlistId`) REFERENCES `Playlist` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`episodeId`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -95,6 +101,11 @@ class _$PodcastDatabase extends PodcastDatabase {
   @override
   PodcastDAO get podcastDao {
     return _podcastDaoInstance ??= _$PodcastDAO(database, changeListener);
+  }
+
+  @override
+  PlaylistDAO get playlistDao {
+    return _playlistDaoInstance ??= _$PlaylistDAO(database, changeListener);
   }
 }
 
@@ -125,7 +136,6 @@ class _$PodcastDAO extends PodcastDAO {
                   'url': item.url,
                   'title': item.title,
                   'podcastId': item.podcastId,
-                  'finished': item.finished ? 1 : 0,
                   'description': item.description,
                   'explicit':
                       item.explicit == null ? null : (item.explicit! ? 1 : 0),
@@ -165,9 +175,10 @@ class _$PodcastDAO extends PodcastDAO {
   final UpdateAdapter<Podcast> _podcastUpdateAdapter;
 
   @override
-  Stream<List<Podcast>> getPodcastStream() {
+  Stream<List<Podcast>> getPodcasts() {
     return _queryAdapter.queryListStream('SELECT * FROM Podcast',
         mapper: (Map<String, Object?> row) => Podcast(
+            id: row['id'] as String,
             title: row['title'] as String,
             link: row['link'] as String,
             image: row['image'] as String,
@@ -181,22 +192,54 @@ class _$PodcastDAO extends PodcastDAO {
   }
 
   @override
-  Stream<List<Episode>> getEpisodes(String podcastId) {
+  Stream<List<Episode>> getEpisodesId(String podcastId) {
     return _queryAdapter.queryListStream(
         'SELECT * FROM Episode WHERE podcastId = ?1',
-        mapper: (Map<String, Object?> row) => Episode(row['url'] as String,
-            row['title'] as String, row['podcastId'] as String),
+        mapper: (Map<String, Object?> row) => Episode(
+            row['url'] as String,
+            row['title'] as String,
+            row['podcastId'] as String,
+            row['id'] as String,
+            row['description'] as String?,
+            row['explicit'] == null ? null : (row['explicit'] as int) != 0,
+            row['guid'] as String?,
+            row['durationString'] as String?,
+            row['pubDateString'] as String?),
         arguments: [podcastId],
         queryableName: 'Episode',
         isView: false);
   }
 
   @override
-  Future<Episode?> episode(String id) async {
+  Future<Episode?> getEpisode(String id) async {
     return _queryAdapter.query('SELECT * FROM Episode WHERE id = ?1',
-        mapper: (Map<String, Object?> row) => Episode(row['url'] as String,
-            row['title'] as String, row['podcastId'] as String),
+        mapper: (Map<String, Object?> row) => Episode(
+            row['url'] as String,
+            row['title'] as String,
+            row['podcastId'] as String,
+            row['id'] as String,
+            row['description'] as String?,
+            row['explicit'] == null ? null : (row['explicit'] as int) != 0,
+            row['guid'] as String?,
+            row['durationString'] as String?,
+            row['pubDateString'] as String?),
         arguments: [id]);
+  }
+
+  @override
+  Future<Episode?> getRandomEpisode() async {
+    return _queryAdapter.query(
+        'SELECT * FROM Episode ORDER BY RANDOM() LIMIT 1',
+        mapper: (Map<String, Object?> row) => Episode(
+            row['url'] as String,
+            row['title'] as String,
+            row['podcastId'] as String,
+            row['id'] as String,
+            row['description'] as String?,
+            row['explicit'] == null ? null : (row['explicit'] as int) != 0,
+            row['guid'] as String?,
+            row['durationString'] as String?,
+            row['pubDateString'] as String?));
   }
 
   @override
@@ -212,5 +255,92 @@ class _$PodcastDAO extends PodcastDAO {
   @override
   Future<void> updatePodcast(Podcast podcast) async {
     await _podcastUpdateAdapter.update(podcast, OnConflictStrategy.abort);
+  }
+}
+
+class _$PlaylistDAO extends PlaylistDAO {
+  _$PlaylistDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database, changeListener),
+        _playlistEntryInsertionAdapter = InsertionAdapter(
+            database,
+            'PlaylistEntry',
+            (PlaylistEntry item) => <String, Object?>{
+                  'episodeId': item.episodeId,
+                  'playlistId': item.playlistId,
+                  'rank': item.rank
+                }),
+        _playlistInsertionAdapter = InsertionAdapter(
+            database,
+            'Playlist',
+            (Playlist item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'counter': item.counter
+                },
+            changeListener),
+        _playlistEntryDeletionAdapter = DeletionAdapter(
+            database,
+            'PlaylistEntry',
+            ['episodeId'],
+            (PlaylistEntry item) => <String, Object?>{
+                  'episodeId': item.episodeId,
+                  'playlistId': item.playlistId,
+                  'rank': item.rank
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<PlaylistEntry> _playlistEntryInsertionAdapter;
+
+  final InsertionAdapter<Playlist> _playlistInsertionAdapter;
+
+  final DeletionAdapter<PlaylistEntry> _playlistEntryDeletionAdapter;
+
+  @override
+  Stream<List<Episode>> getPlaylist(String playlistId) {
+    return _queryAdapter.queryListStream(
+        'SELECT e.* FROM Episode AS e INNER JOIN PlaylistEntry AS l ON e.id=l.episodeId WHERE l.playlistId = ?1',
+        mapper: (Map<String, Object?> row) => Episode(
+            row['url'] as String,
+            row['title'] as String,
+            row['podcastId'] as String,
+            row['id'] as String,
+            row['description'] as String?,
+            row['explicit'] == null ? null : (row['explicit'] as int) != 0,
+            row['guid'] as String?,
+            row['durationString'] as String?,
+            row['pubDateString'] as String?),
+        arguments: [playlistId],
+        queryableName: 'Episode',
+        isView: false);
+  }
+
+  @override
+  Stream<List<Playlist>> getPlaylists() {
+    return _queryAdapter.queryListStream('SELECT * FROM playlist',
+        mapper: (Map<String, Object?> row) => Playlist(
+            row['id'] as String, row['name'] as String, row['counter'] as int),
+        queryableName: 'Playlist',
+        isView: false);
+  }
+
+  @override
+  Future<void> addPlaylistEntry(PlaylistEntry playlistEntry) async {
+    await _playlistEntryInsertionAdapter.insert(
+        playlistEntry, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> addPlaylist(Playlist playlist) async {
+    await _playlistInsertionAdapter.insert(playlist, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteEpisode(PlaylistEntry playlistEntry) async {
+    await _playlistEntryDeletionAdapter.delete(playlistEntry);
   }
 }

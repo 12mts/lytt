@@ -4,11 +4,12 @@ import 'package:webfeed/domain/rss_item.dart';
 
 import '../manager/io_manager.dart';
 
-@Entity(
-    foreignKeys: [ForeignKey(
-        childColumns: ["podcastId"], parentColumns: ["id"], entity: Podcast)])
+@Entity(foreignKeys: [
+  ForeignKey(
+      childColumns: ["podcastId"], parentColumns: ["id"], entity: Podcast)
+])
 class Episode {
-  @PrimaryKey()
+  @primaryKey
   late String id;
 
   late String url;
@@ -16,15 +17,20 @@ class Episode {
 
   String podcastId;
 
-  bool finished = false;
-
   String? description;
   bool? explicit;
   String? guid;
   String? durationString;
   String? pubDateString;
 
-  Episode(this.url, this.title, this.podcastId) {
+  Episode(this.url, this.title, this.podcastId, this.id, this.description,
+      this.explicit, this.guid, this.durationString, this.pubDateString);
+
+  Episode.simple(
+    this.url,
+    this.title,
+    this.podcastId,
+  ) {
     id = (guid ?? url).hashCode.toRadixString(32);
   }
 
