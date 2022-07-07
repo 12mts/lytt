@@ -90,7 +90,7 @@ class _$PodcastDatabase extends PodcastDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Playlist` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `counter` INTEGER NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `PlaylistEntry` (`episodeId` TEXT NOT NULL, `playlistId` TEXT NOT NULL, `rank` INTEGER NOT NULL, FOREIGN KEY (`episodeId`) REFERENCES `Episode` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`playlistId`) REFERENCES `Playlist` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`episodeId`))');
+            'CREATE TABLE IF NOT EXISTS `PlaylistEntry` (`playlistId` TEXT NOT NULL, `episodeId` TEXT NOT NULL, `rank` INTEGER NOT NULL, FOREIGN KEY (`playlistId`) REFERENCES `Playlist` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`episodeId`) REFERENCES `Episode` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`episodeId`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -175,7 +175,7 @@ class _$PodcastDAO extends PodcastDAO {
   final UpdateAdapter<Podcast> _podcastUpdateAdapter;
 
   @override
-  Stream<List<Podcast>> getPodcasts() {
+  Stream<List<Podcast>> getPodcastList() {
     return _queryAdapter.queryListStream('SELECT * FROM Podcast',
         mapper: (Map<String, Object?> row) => Podcast(
             id: row['id'] as String,
@@ -192,7 +192,7 @@ class _$PodcastDAO extends PodcastDAO {
   }
 
   @override
-  Stream<List<Episode>> getEpisodesId(String podcastId) {
+  Stream<List<Episode>> getEpisodes(String podcastId) {
     return _queryAdapter.queryListStream(
         'SELECT * FROM Episode WHERE podcastId = ?1',
         mapper: (Map<String, Object?> row) => Episode(
@@ -265,8 +265,8 @@ class _$PlaylistDAO extends PlaylistDAO {
             database,
             'PlaylistEntry',
             (PlaylistEntry item) => <String, Object?>{
-                  'episodeId': item.episodeId,
                   'playlistId': item.playlistId,
+                  'episodeId': item.episodeId,
                   'rank': item.rank
                 }),
         _playlistInsertionAdapter = InsertionAdapter(
@@ -278,13 +278,23 @@ class _$PlaylistDAO extends PlaylistDAO {
                   'counter': item.counter
                 },
             changeListener),
+        _playlistUpdateAdapter = UpdateAdapter(
+            database,
+            'Playlist',
+            ['id'],
+            (Playlist item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'counter': item.counter
+                },
+            changeListener),
         _playlistEntryDeletionAdapter = DeletionAdapter(
             database,
             'PlaylistEntry',
             ['episodeId'],
             (PlaylistEntry item) => <String, Object?>{
-                  'episodeId': item.episodeId,
                   'playlistId': item.playlistId,
+                  'episodeId': item.episodeId,
                   'rank': item.rank
                 });
 
@@ -297,6 +307,8 @@ class _$PlaylistDAO extends PlaylistDAO {
   final InsertionAdapter<PlaylistEntry> _playlistEntryInsertionAdapter;
 
   final InsertionAdapter<Playlist> _playlistInsertionAdapter;
+
+  final UpdateAdapter<Playlist> _playlistUpdateAdapter;
 
   final DeletionAdapter<PlaylistEntry> _playlistEntryDeletionAdapter;
 
@@ -320,7 +332,7 @@ class _$PlaylistDAO extends PlaylistDAO {
   }
 
   @override
-  Stream<List<Playlist>> getPlaylists() {
+  Stream<List<Playlist>> getPlaylistList() {
     return _queryAdapter.queryListStream('SELECT * FROM playlist',
         mapper: (Map<String, Object?> row) => Playlist(
             row['id'] as String, row['name'] as String, row['counter'] as int),
@@ -337,6 +349,11 @@ class _$PlaylistDAO extends PlaylistDAO {
   @override
   Future<void> addPlaylist(Playlist playlist) async {
     await _playlistInsertionAdapter.insert(playlist, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updatePlaylist(Playlist playlist) async {
+    await _playlistUpdateAdapter.update(playlist, OnConflictStrategy.abort);
   }
 
   @override

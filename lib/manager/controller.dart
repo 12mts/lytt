@@ -3,7 +3,6 @@ import 'package:lytt/DAO/playlist_dao.dart';
 import 'package:lytt/player/player.dart';
 import 'package:lytt/podcast/episode.dart';
 import 'package:lytt/podcast/playlist.dart';
-import 'package:lytt/podcast/playlistEntry.dart';
 import 'package:lytt/podcast/podcast.dart';
 import 'package:webfeed/domain/rss_feed.dart';
 
@@ -13,21 +12,21 @@ import 'io_manager.dart';
 
 class Controller {
   final _storage = StorageHandler();
-  late final PodcastDAO _podcastDAO;
-  late final PlaylistDAO _playlistDAO;
+  late final PodcastManager _podcast;
+  late final PlaylistManager _playlist;
   final _web = WebHandler();
   late final PlayerController player;
 
   Controller() {
     $FloorPodcastDatabase.databaseBuilder('podcast.db').build().then((db) {
-      _podcastDAO = db.podcastDao;
-      _playlistDAO = db.playlistDao;
+      _podcast = PodcastManager(db);
+      _playlist = PlaylistManager(db);
     });
     player = PlayerController(this);
   }
 
   Stream<List<Podcast>> getPodcasts() {
-    return _podcastDAO.getPodcasts();
+    return _podcast.getPodcastList();
   }
 
   void playEpisode(Episode episode) {
@@ -41,11 +40,7 @@ class Controller {
 
   Future<Podcast> addPodcast(String url) async {
     final feed = RssFeed.parse(await _web.getAsString(url));
-    final podcast = Podcast.fromFeed(url, feed);
-    _podcastDAO.addPodcast(podcast);
-    for (var ep in feed.items!) {
-      _podcastDAO.addEpisode(Episode.fromFeed(ep, podcast.id));
-    }
+    final podcast = await _podcast.addPodcastFeed(url, feed);
     _storage.downloadImage(podcast);
     return podcast;
   }
@@ -67,41 +62,31 @@ class Controller {
   }
 
   Future<bool> updatePodcast(Podcast podcast) async {
-    // TODO not done properly
     final feed = RssFeed.parse(await _web.getAsString(podcast.rssUrl));
-    final newPodcast = Podcast.fromFeed(podcast.rssUrl, feed);
-    _podcastDAO.updatePodcast(newPodcast);
-    for (var ep in feed.items!) {
-      var episode = Episode.fromFeed(ep, podcast.id);
-      if (!await _podcastDAO.episodeExists(episode)) {
-        _podcastDAO.addEpisode(episode);
-      }
-    }
-    return true;
+    return _podcast.updatePodcast(podcast, feed);
   }
 
   Stream<List<Episode>> episodeList(Podcast podcast) {
-    return _podcastDAO.getEpisodes(podcast);
+    return _podcast.getEpisodeList(podcast);
   }
 
   Stream<List<Playlist>> getPlaylists() {
-    return _playlistDAO.getPlaylists();
+    return _playlist.getPlaylistList();
   }
 
   Stream<List<Episode>> getPlaylistEpisodes(Playlist playlist) {
-    return _playlistDAO.getPlaylist(playlist.id);
+    return _playlist.getPlaylist(playlist);
   }
 
   void addPlaylist(String text) {
-    _playlistDAO.addPlaylist(Playlist.name(text));
+    _playlist.addPlaylist(text);
   }
 
   // Only for testing
   void addRandom(Playlist playlist) async {
-    Episode? episode = await _podcastDAO.getRandomEpisode();
+    Episode? episode = await _podcast.getRandomEpisode();
     if (episode != null) {
-      _playlistDAO
-          .addPlaylistEntry(PlaylistEntry(episode.id, playlist.id, playlist.counter));
+      _playlist.addPlaylistEntry(playlist, episode);
     }
   }
 }

@@ -8,14 +8,14 @@ import 'episode.dart';
   'playlistName'
 ], foreignKeys: [
   ForeignKey(
-      childColumns: ['episodeId'], parentColumns: ['id'], entity: Episode),
+      childColumns: ['playlistId'], parentColumns: ['id'], entity: Playlist),
   ForeignKey(
-      childColumns: ['playlistId'], parentColumns: ['id'], entity: Playlist)
+      childColumns: ['episodeId'], parentColumns: ['id'], entity: Episode),
 ])
 class PlaylistEntry {
-  final String episodeId;
   final String playlistId;
+  final String episodeId;
   int rank;
 
-  PlaylistEntry(this.episodeId, this.playlistId, this.rank);
+  PlaylistEntry(this.playlistId, this.episodeId, this.rank);
 }
