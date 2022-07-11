@@ -20,7 +20,14 @@ class PlayerWidget extends StatelessWidget {
           stream: controller.player.episodeStream.stream,
           builder: (BuildContext context, AsyncSnapshot<Episode?> episode) {
             if (!episode.hasData) {
-              return const Text("ok");
+              return Expanded(
+                  child:
+                  Column(
+                    children: [
+                      Expanded( child:ImageWidget.noImageWidget(null)),
+                      const Text("-"),
+                    ],
+                  ));
             }
             final ep = episode.data!;
             return Expanded(

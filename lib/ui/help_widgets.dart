@@ -19,13 +19,13 @@ class ImageWidget extends StatelessWidget {
           if (file.hasData) {
             return SizedBox(
               height: height,
-                child: file.data ?? noImageWidget());
+                child: file.data ?? noImageWidget(height));
           }
-          return noImageWidget();
+          return noImageWidget(height);
         });
   }
 
-  Widget noImageWidget() {
+  static Widget noImageWidget(double? height) {
     return Container(
         height: height,
         color: Colors.black12,
