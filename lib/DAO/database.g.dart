@@ -313,7 +313,7 @@ class _$PlaylistDAO extends PlaylistDAO {
   final DeletionAdapter<PlaylistEntry> _playlistEntryDeletionAdapter;
 
   @override
-  Stream<List<Episode>> getPlaylistStream(String playlistId) {
+  Stream<List<Episode>> getPlaylist(String playlistId) {
     return _queryAdapter.queryListStream(
         'SELECT e.* FROM PlaylistEntry AS l INNER JOIN Episode AS e ON l.episodeId=e.id WHERE l.playlistId = ?1',
         mapper: (Map<String, Object?> row) => Episode(
@@ -329,14 +329,6 @@ class _$PlaylistDAO extends PlaylistDAO {
         arguments: [playlistId],
         queryableName: 'Episode',
         isView: false);
-  }
-
-  @override
-  Future<List<Episode>> getPlaylistFuture(String playlistId) async {
-    return _queryAdapter.queryList(
-        'SELECT e.* FROM PlaylistEntry AS l INNER JOIN Episode AS e ON l.episodeId=e.id WHERE l.playlistId = ?1',
-        mapper: (Map<String, Object?> row) => Episode(row['url'] as String, row['title'] as String, row['podcastId'] as String, row['id'] as String, row['description'] as String?, row['explicit'] == null ? null : (row['explicit'] as int) != 0, row['guid'] as String?, row['durationString'] as String?, row['pubDateString'] as String?),
-        arguments: [playlistId]);
   }
 
   @override

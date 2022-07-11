@@ -20,12 +20,12 @@ class Controller {
 
   Controller() {
     player = PlayerManager();
-    start();
+    _start();
   }
 
   PlaylistManager get playlistManager => _playlist;
 
-  void start() async {
+  void _start() async {
     final db =
         await $FloorPodcastDatabase.databaseBuilder('podcast.db').build();
     _playlist = PlaylistManager(db);
@@ -97,69 +97,3 @@ class Controller {
     }
   }
 }
-
-
-/*
-class PlayerController {
-  final _storage = StorageHandler();
-  PlayingItem playingItem = PlayingEpisode(Episode.simple(
-      "http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3",
-      "H.I. #3: Four Light Bulbs, ÆØÅ",
-      "r77mft"));
-  late final Player _player;
-  late final PlaylistManager _playlist;
-
-  PlayerController(Controller controller, PlaylistManager playlistManager) {
-    _playlist = playlistManager;
-  }
-
-  void start() async {
-    _player = Player(await playingItem.url, nextItem);
-  }
-
-  void addPlaylistManager(PlaylistManager playlistManager) {
-    _playlist = playlistManager;
-  }
-
-  void playEpisode(Episode episode) async {
-    playingItem = PlayingEpisode(episode);
-    _player.setEpisode(_storage
-        .episodeUri(await playingItem.getCurrentEpisode() ?? standard()));
-  }
-
-  void playPlaylist(Playlist playlist) {
-    playingItem = PlayingPlaylist(playlist, _playlist);
-    _setEpisode();
-  }
-
-  bool startStop() {
-    return _player.startStop();
-  }
-
-  Stream<PlayerDurationState> playerState() {
-    return _player.playerState();
-  }
-
-  void setTime(Duration duration) {
-    _player.setTime(duration);
-  }
-
-  void _setEpisode() async {
-    _player.setEpisode(_storage
-        .episodeUri(await playingItem.getCurrentEpisode() ?? standard()));
-  }
-
-  void nextItem() {
-    playingItem.getGetNext();
-    _setEpisode();
-  }
-
-  Episode standard() {
-    return Episode.simple(
-        "http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3",
-        "H.I. #3: Four Light Bulbs, ÆØÅ",
-        "r77mft");
-  }
-}
-
- */

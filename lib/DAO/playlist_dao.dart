@@ -16,7 +16,7 @@ class PlaylistManager {
   }
 
   Stream<List<Episode>> getPlaylist(Playlist playlist) {
-    return _dao.getPlaylistStream(playlist.id);
+    return _dao.getPlaylist(playlist.id);
   }
 
   void addPlaylist(String text) {
@@ -40,21 +40,13 @@ class PlaylistManager {
       _dao.deleteEpisode(ep);
     }
   }
-
-  Future<List<Episode>> getCurrentList(Playlist playlist) {
-    return _dao.getPlaylistFuture(playlist.id);
-  }
 }
 
 @dao
 abstract class PlaylistDAO {
   @Query('SELECT e.* FROM PlaylistEntry AS l INNER JOIN Episode AS e '
       'ON l.episodeId=e.id WHERE l.playlistId = :playlistId')
-  Stream<List<Episode>> getPlaylistStream(String playlistId);
-
-  @Query('SELECT e.* FROM PlaylistEntry AS l INNER JOIN Episode AS e '
-      'ON l.episodeId=e.id WHERE l.playlistId = :playlistId')
-  Future<List<Episode>> getPlaylistFuture(String playlistId);
+  Stream<List<Episode>> getPlaylist(String playlistId);
 
   @delete
   Future<void> deleteEpisode(PlaylistEntry playlistEntry);
