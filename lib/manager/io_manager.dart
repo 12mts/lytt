@@ -72,12 +72,16 @@ class StorageHandler {
     return await (await _localFileEpisode(episode)).exists();
   }
 
-  Future<Uri> episodeUri(Episode episode) async {
-    var pos = await _localFileEpisode(episode);
+  Future<Uri?> episodeUri(Future<Episode?> episode) async {
+    final e = await episode;
+    if (e == null) {
+      return null;
+    }
+    var pos = await _localFileEpisode(e);
     if (await (pos).exists()) {
       return pos.uri;
     }
-    return Uri.parse(episode.url);
+    return Uri.parse(e.url);
   }
 
   Future<Directory> _localFileImage(String podcastId) async {

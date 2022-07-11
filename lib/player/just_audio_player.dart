@@ -1,11 +1,14 @@
+/*
 import 'package:just_audio/just_audio.dart';
 import 'package:lytt/player/player.dart';
 import 'package:rxdart/rxdart.dart';
 
+
+ */
 ///
 /// NO LEFT SOUND; NOT IN USE
 ///
-
+/*
 class PlayerJA implements Player {
   final _player = AudioPlayer();
 
@@ -62,3 +65,5 @@ class PlayerJA implements Player {
     return true;
   }
 }
+
+ */

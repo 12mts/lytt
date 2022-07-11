@@ -313,9 +313,9 @@ class _$PlaylistDAO extends PlaylistDAO {
   final DeletionAdapter<PlaylistEntry> _playlistEntryDeletionAdapter;
 
   @override
-  Stream<List<Episode>> getPlaylist(String playlistId) {
+  Stream<List<Episode>> getPlaylistStream(String playlistId) {
     return _queryAdapter.queryListStream(
-        'SELECT e.* FROM Episode AS e INNER JOIN PlaylistEntry AS l ON e.id=l.episodeId WHERE l.playlistId = ?1',
+        'SELECT e.* FROM PlaylistEntry AS l INNER JOIN Episode AS e ON l.episodeId=e.id WHERE l.playlistId = ?1',
         mapper: (Map<String, Object?> row) => Episode(
             row['url'] as String,
             row['title'] as String,
@@ -332,12 +332,32 @@ class _$PlaylistDAO extends PlaylistDAO {
   }
 
   @override
+  Future<List<Episode>> getPlaylistFuture(String playlistId) async {
+    return _queryAdapter.queryList(
+        'SELECT e.* FROM PlaylistEntry AS l INNER JOIN Episode AS e ON l.episodeId=e.id WHERE l.playlistId = ?1',
+        mapper: (Map<String, Object?> row) => Episode(row['url'] as String, row['title'] as String, row['podcastId'] as String, row['id'] as String, row['description'] as String?, row['explicit'] == null ? null : (row['explicit'] as int) != 0, row['guid'] as String?, row['durationString'] as String?, row['pubDateString'] as String?),
+        arguments: [playlistId]);
+  }
+
+  @override
   Stream<List<Playlist>> getPlaylistList() {
     return _queryAdapter.queryListStream('SELECT * FROM playlist',
         mapper: (Map<String, Object?> row) => Playlist(
             row['id'] as String, row['name'] as String, row['counter'] as int),
         queryableName: 'Playlist',
         isView: false);
+  }
+
+  @override
+  Future<PlaylistEntry?> getPlaylistEntry(
+      String playlistId, String episodeId) async {
+    return _queryAdapter.query(
+        'SELECT * FROM playlistEntry WHERE playlistId = ?1 AND episodeId = ?2',
+        mapper: (Map<String, Object?> row) => PlaylistEntry(
+            row['playlistId'] as String,
+            row['episodeId'] as String,
+            row['rank'] as int),
+        arguments: [playlistId, episodeId]);
   }
 
   @override

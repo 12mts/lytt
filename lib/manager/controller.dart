@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lytt/DAO/playlist_dao.dart';
-import 'package:lytt/player/player.dart';
+import 'package:lytt/player/player_manager.dart';
 import 'package:lytt/podcast/episode.dart';
 import 'package:lytt/podcast/playlist.dart';
 import 'package:lytt/podcast/podcast.dart';
@@ -8,6 +8,7 @@ import 'package:webfeed/domain/rss_feed.dart';
 
 import '../DAO/database.dart';
 import '../DAO/podcast_dao.dart';
+import '../player/playing_item.dart';
 import 'io_manager.dart';
 
 class Controller {
@@ -15,22 +16,28 @@ class Controller {
   late final PodcastManager _podcast;
   late final PlaylistManager _playlist;
   final _web = WebHandler();
-  late final PlayerController player;
+  late final PlayerManager player;
 
   Controller() {
-    $FloorPodcastDatabase.databaseBuilder('podcast.db').build().then((db) {
-      _podcast = PodcastManager(db);
-      _playlist = PlaylistManager(db);
-    });
-    player = PlayerController(this);
+    player = PlayerManager();
+    start();
+  }
+
+  PlaylistManager get playlistManager => _playlist;
+
+  void start() async {
+    final db =
+        await $FloorPodcastDatabase.databaseBuilder('podcast.db').build();
+    _playlist = PlaylistManager(db);
+    _podcast = PodcastManager(db);
   }
 
   Stream<List<Podcast>> getPodcasts() {
     return _podcast.getPodcastList();
   }
 
-  void playEpisode(Episode episode) {
-    player.playEpisode(episode);
+  void playEpisode(Episode? episode) async {
+    player.playItem(PlayingEpisode(episode));
   }
 
   Future<Podcast> podcastURL(String url) async {
@@ -91,21 +98,38 @@ class Controller {
   }
 }
 
+
+/*
 class PlayerController {
   final _storage = StorageHandler();
-  Episode episode = Episode.simple(
+  PlayingItem playingItem = PlayingEpisode(Episode.simple(
       "http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3",
       "H.I. #3: Four Light Bulbs, ÆØÅ",
-      "r77mft");
+      "r77mft"));
   late final Player _player;
+  late final PlaylistManager _playlist;
 
-  PlayerController(Controller controller) {
-    _player = Player(episode.url);
+  PlayerController(Controller controller, PlaylistManager playlistManager) {
+    _playlist = playlistManager;
   }
 
-  void playEpisode(Episode episode) {
-    this.episode = episode;
-    _player.setEpisode(_storage.episodeUri(episode));
+  void start() async {
+    _player = Player(await playingItem.url, nextItem);
+  }
+
+  void addPlaylistManager(PlaylistManager playlistManager) {
+    _playlist = playlistManager;
+  }
+
+  void playEpisode(Episode episode) async {
+    playingItem = PlayingEpisode(episode);
+    _player.setEpisode(_storage
+        .episodeUri(await playingItem.getCurrentEpisode() ?? standard()));
+  }
+
+  void playPlaylist(Playlist playlist) {
+    playingItem = PlayingPlaylist(playlist, _playlist);
+    _setEpisode();
   }
 
   bool startStop() {
@@ -119,4 +143,23 @@ class PlayerController {
   void setTime(Duration duration) {
     _player.setTime(duration);
   }
+
+  void _setEpisode() async {
+    _player.setEpisode(_storage
+        .episodeUri(await playingItem.getCurrentEpisode() ?? standard()));
+  }
+
+  void nextItem() {
+    playingItem.getGetNext();
+    _setEpisode();
+  }
+
+  Episode standard() {
+    return Episode.simple(
+        "http://traffic.libsyn.com/hellointernet/HI20320--20Four20Light20Bulbs.mp3",
+        "H.I. #3: Four Light Bulbs, ÆØÅ",
+        "r77mft");
+  }
 }
+
+ */

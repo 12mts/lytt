@@ -3,9 +3,12 @@ import 'package:rxdart/rxdart.dart';
 
 class Player {
   final _player = AudioPlayer();
+  late Function next;
 
-  Player(url) {
-    _player.setSourceUrl(url);
+  Player(this.next) {
+    _player.onPlayerComplete.listen((event) {
+      next();
+    });
   }
 
   bool isPlaying() {
@@ -18,8 +21,11 @@ class Player {
     }
   }
 
-  void setEpisode(Future<Uri> uri) async {
-    _player.play(UrlSource((await uri).toString()));
+  void setEpisode(Future<Uri?> uri) async {
+    final u = await uri;
+    if (u != null) {
+      _player.play(UrlSource(u.toString()));
+    }
   }
 
   void setTime(Duration duration) async {

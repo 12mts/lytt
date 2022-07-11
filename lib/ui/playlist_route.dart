@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lytt/player/playing_item.dart';
 import 'package:lytt/podcast/episode.dart';
 
 import '../manager/controller.dart';
@@ -40,7 +41,9 @@ class PlaylistListWidget extends StatelessWidget {
       list.add(ListTile(
         trailing: IconButton(
           icon: const Icon(Icons.play_arrow),
-          onPressed: () {},
+          onPressed: () {
+            controller.player.playItem(PlayingPlaylist(playlist, controller.playlistManager));
+          },
         ),
         title: Text(playlist.name),
         onTap: () {
@@ -72,12 +75,13 @@ class PlaylistListWidget extends StatelessWidget {
   }
 }
 
+
 class PlaylistViewWidget extends StatelessWidget {
   final Controller controller;
   final Playlist playlist;
 
-  const PlaylistViewWidget(this.controller, this.playlist, {Key? key})
-      : super(key: key);
+  PlaylistViewWidget(this.controller, this.playlist)
+      : super(key: ObjectKey(playlist));
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +100,7 @@ class PlaylistViewWidget extends StatelessWidget {
                 (BuildContext context, AsyncSnapshot<List<Episode>> playlists) {
               if (playlists.hasData) {
                 return ListView(
-                  children: episodeList(playlists.data!),
+                  children: episodeList(playlists.requireData),
                 );
               }
               return ListView();
